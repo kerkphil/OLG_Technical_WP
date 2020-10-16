@@ -1,0 +1,138 @@
+\documentclass[letterpaper,12pt]{article}
+% packages used
+    \usepackage{natbib}
+	\usepackage{threeparttable}
+	\usepackage[format=hang,font=normalsize,labelfont=bf]{caption}
+	\usepackage{amsmath}
+	\usepackage{amssymb}
+	\usepackage{amsthm}
+	\usepackage{caption}
+	\usepackage{subcaption}
+	\usepackage{setspace}
+	\usepackage{float,color}
+	\usepackage[pdftex]{graphicx}
+	\usepackage{hyperref}
+	\usepackage{multirow}
+	\usepackage{float,graphicx,color}
+	\usepackage{graphics}
+    \usepackage{placeins}
+    \usepackage{authblk}
+    \usepackage{tikz}
+
+% other setup
+	\hypersetup{colorlinks, linkcolor=red, urlcolor=blue, citecolor=red, hypertexnames=false}
+	\graphicspath{{./figures/}}
+	\DeclareMathOperator*{\Max}{Max}
+	\bibliographystyle{aer}
+	\numberwithin{equation}{section}
+	\numberwithin{figure}{section}
+	\numberwithin{table}{section}
+	\newcommand\ve{\varepsilon}
+	\def\chk{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+	\newcommand*{\addheight}[2][.5ex]{%
+        \raisebox{0pt}[\dimexpr\height+(#1)\relax]{#2}%
+        }
+
+
+\begin{document}
+
+
+\begin{titlepage}
+	\title{Using an Overlapping Generations Model to Assess the Effects of Financing a Large Government Expenditure
+	\thanks{The views expressed in this paper are the authors' and should not be interpreted as those of the Congressional Budget Office.}}
+
+    \author[1]{Jaeger Nelson}
+	\author[1]{Kerk L. Phillips}
+
+	\affil[1]{\footnotesize US Congressional Budget Office, Washington, DC, USA}
+
+	\date{October 16, 2020\\
+	\small{version 2020.10.a}}
+	
+	\maketitle
+
+	\vspace{-0.3 in}
+	\begin{abstract}
+	\small{
+	This paper ... 
+
+	\vspace{0.1 in}
+
+	\textit{keywords:} economic policy, taxes, overlapping generations, computational economics
+
+	\vspace{0.1 in}
+
+	\textit{JEL classifications: ??} }
+	\end{abstract}
+
+	\centering
+	IN PROGRESS
+	\thispagestyle{empty}
+\end{titlepage}
+
+
+\begin{spacing}{1.5}
+
+\section{Introduction} \label{sec_intro}
+
+	This paper serves two major purposes.  First, it documents the effects of various financing methods for funding a major increase in government expenditures.  Second, it details and documents a substantive revision to CBO's overlapping generations model.
+
+	\subsection{Literature Review} \label{sec_intro_lit}
+
+		Cite the following: \citet{AuerbachKotlikoff1987}, \citet{NishiyamaSmetters:2007}, \citet{NishiyamaReichling:2015}, \citet{NelsonEtal:2019}.
+
+
+\section{The Overlapping Generations Model} \label{sec_OLGModel}
+
+	This section details CBO's revised overlapping generations model.
+
+	\subsection{Firms' Problem} \label{sec_OLGModel_firms}
+
+	\subsection{Households' Problem} \label{sec_OLGModel_HH}
+
+	\subsection{Government} \label{sec_OLGModel_govt}
+
+	\subsection{Calibration} \label{sec_OLGModel_calib}
+
+	\subsection{Solution Method} \label{sec_OLGModel_soln}
+
+
+\section{Results from Financing Options} \label{sec_results}
+
+	CBO paper examines three financing mechanisms:
+
+	\begin{itemize}
+		\item Tax on labor income only
+		\item Tax on combined labor and capital income
+		\item Consumption tax
+	\end{itemize}
+
+	For this paper do we want to consider other mechanisms as well?
+	\begin{itemize}
+		\item Lump-sum tax
+		\item Other?
+	\end{itemize}
+
+\section{Conclusion} \label{sec_concl}
+
+	
+
+\clearpage
+
+% \newpage
+% \renewcommand{\theequation}{A.\arabic{equation}}
+%                                                  % redefine the command that creates the section number
+% \renewcommand{\thesection}{A\arabic{section}}   % redefine the command that creates the equation number
+% \setcounter{equation}{0}                         % reset counter
+% \setcounter{section}{0}                          % reset section number
+% \section*{APPENDICES}                              % use *-form to suppress numbering
+% \numberwithin{figure}{section}
+% \numberwithin{equation}{section}
+
+
+\end{spacing}
+\newpage
+\nocite{*}
+\bibliography{EffectsFinancing}
+
+\end{document}

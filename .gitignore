@@ -1,0 +1,29 @@
+#Build Files and Compiled Files
+################################
+*.pyc
+build/
+dist/
+
+#Latex Related Files
+####################
+*.aux
+*.fdb_latexmk
+*.nav
+*.out
+*.snm
+*.gz
+*.toc
+*.pdfsync
+*.blg
+*.bbl
+*.log
+*.fls
+
+#Bibtex files
+#############
+*.sav
+*.bak
+
+#Documentation Build Files
+##########################
+docs/_build/
