@@ -1,0 +1,1007 @@
+\documentclass[11pt,leqno,fleqn]{article}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{dsfont}
+\usepackage{amssymb,latexsym}
+%\usepackage{booktabs}
+%\usepackage[bottom]{footmisc}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{times}
+\usepackage{verbatim}
+\usepackage{bigstrut}
+\usepackage{appendix}
+%\usepackage{color,soul}
+\usepackage{natbib}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[section]{placeins}
+\usepackage{float}
+%\restylefloat{table}
+%\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = black, %Colour of internal links
+  citecolor    = blue %Colour of citations
+}
+
+%\usepackage[hyphens]{url}
+%\usepackage{breakurl}
+
+%\usepackage{url}
+\urlstyle{same}
+
+\allowdisplaybreaks
+%\doublespacing
+\setstretch{1.0}
+\setcounter{MaxMatrixCols}{10}
+
+\setlength{\topmargin}{-0.5in}
+\setlength{\topskip}{0.0in}
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0.0in}
+\setlength{\evensidemargin}{0.0in}
+
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}								% 2 may work better
+\setcounter{dbltopnumber}{2}							% for 2-column pages
+
+\renewcommand{\topfraction}{0.9}					% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}				% max fraction of floats at bottom
+\renewcommand{\dbltopfraction}{0.9}				% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}				% allow minimal text w. figs
+\renewcommand{\floatpagefraction}{0.7}		% require fuller float pages
+\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+\newcommand{\be}{\vspace{-1em}\begin{singlespace}\begin{equation}}
+\newcommand{\ee}{\end{equation}\end{singlespace}}
+\newcommand{\ind}{\mathds{1}}
+
+\newcommand{\ignore}[2]{\hspace{0in}#2}		% Ignores text 
+
+\renewcommand{\appendixpage}{\noindent\LARGE\textbf{Appendix} \normalsize} % Changes Default name of Appendix
+
+\begin{document}
+
+\pagestyle{empty}
+
+\begin{center}
+Working Paper Series\\
+Congressional Budget Office\\
+Washington, DC\vspace{0.75in}
+
+\textbf{\Large Overlapping Generations Model: \textit{Documentation}}
+
+\vspace{5em}
+
+Jaeger Nelson\\
+Macroeconomic Analysis Division\\
+Congressional Budget Office\\
+jaeger.nelson@cbo.gov
+
+\vspace{5em}
+
+Working Paper 2020-XX\\
+
+\vspace{2em}
+\Large [VERY PRELIMINARY DO NOT CITE]\\
+\vspace{2em}
+\normalsize
+
+March 2020\\
+
+\end{center}
+
+\vspace*{\fill}
+
+\begin{flushleft}
+	\small To enhance the transparency of the work of the Congressional Budget Office and to encourage external review of that work, CBO's working paper series includes papers that provide technical descriptions of official CBO analyses as well as papers that represent independent research by CBO analysts. Papers in this series are available at \url{http://go.usa.gov/ULE}.
+\end{flushleft}
+
+\vspace{2em}
+
+\begin{center}
+	\url{www.cbo.gov/publication/XXXXX}
+\end{center}
+
+
+
+
+\newpage
+%\doublespacing
+%\thispagestyle{empty}
+
+\begin{center}
+\textbf{Abstract}\\
+\end{center}
+
+\noindent This paper contains technical details of a quantitative overlapping generations model and the computational techniques used to solve it. This document was based off of the Congressional Budget Office publication The Cost to Different Generations of Policies That Close the Fiscal Gap: Working Paper 2015-10 (December 2015), www.cbo.gov/publication/45140. The authors of that paper were Shinichi Nishiyama\footnote{Current position: Professor of Economics at the Graduate School at Kyoto University.} and Felix Reichling\footnote{Current position: Senior Economist at the Penn Wharton Budget Model at the University of Pennsylvania.}. This document is intended to be used as internal documentation but may evolve into a working paper at some point in the future.
+\\
+
+
+\newpage
+%\doublespacing
+
+\pagestyle{plain}
+\setcounter{page}{1}
+
+\section{Technical Description of the Model}\label{Section:Model Description}
+
+The model economy consists of a large number of heterogeneous and overlapping-generations households, a perfectly competitive representative firm with constant-returns-to-scale technology, and a government that can credibly commit to a path for fiscal policy. The time is discrete, and one model period is a year, which is denoted by $t$. In equilibrium the economy is on a balanced-growth path with a constant labor-augmenting productivity growth rate, $\mu$, and a constant population growth rate, $\nu$.\footnote{\label{FN:g_adj1} The economy is said to be on a balanced-growth path when the capital stock, the effective labor supply, and total output grow at the same rate. We assume that individual labor productivity grows, on average, at $\mu=1.8\%$ each year and that the population grows at $\nu=1.0\%$ each year. When a household's labor choices are unchanged over time (conditional on their state-space), the aggregate labor supply in efficiency units grows at $(1+\mu)(1+\nu)-1=2.8\%$ each year because of the labor productivity growth and population growth. When the economy's capital stock grows at that same rate, the total output of the economy also grows by 2.8 percent each year. }
+
+In the following description of the model, individual variables other than working hours are growth-adjusted by $(1+\mu)^{-t}$, the population measure of households is adjusted by $(1+\nu)^{-t}$, and aggregate variables are adjusted by $[(1+\mu)(1+\nu)]^{-t}$.
+
+\subsection{Households}
+
+Households in the model economy are heterogeneous with respect to age ($i$), wealth ($a$), average historical earnings ($b$), and labor productivity ($e$). Households enter the economy and start working at age $i=21$. In each period households face longevity risk but live to a maximum age of $i=I=100$. For simplicity, households are assumed to start receiving OASI benefits at age $i=I_C=65$, although they are also allowed to continue working after that age if they find it optimal until a mandatory retirement age of $i=I_R=75$.
+
+Average historical earnings, $b$, are used to approximate the household's average indexed monthly earnings (AIME) needed to determine Old-Age and Survivors Insurance (OASI) benefits.\footnote{See \citet{SSA:2014} for the exact calculations of the AIME and the primary insurance amount (PIA).} Households' labor productivity, $e$, follows a first-order Markov process. In each year, $t$, households receive idiosyncratic and age-dependent shocks to their working ability, $e$. In each period households choose their consumption, $c$, working hours, $h$, and thus wealth at the beginning of the next year, $a'$, to maximize their expected (remaining) lifetime utility.
+
+The household's hourly wage is shown by $w_{t}e$, where $w_{t}$ is the wage rate per unit of productivity, which is determined by the labor market. The rate of return on capital, $r_{t}$, is endogenous but deterministic because there are no aggregate productivity shocks in the model economy. The average wage rate (the wage rate per efficiency unit of labor), $w_{t}$, is also endogenous but deterministic, although the individual wage rate, $w_{t}e$, is stochastic.
+
+\subsubsection{State Variables}
+
+Let $\mathbf{s}$ and $\mathbf{S}_{t}$ denote the individual state of the household and the aggregate state of the economy in year $t$, respectively,
+
+\be \mathbf{s}=(i,a,b,z),\qquad\mathbf{S}_{t}=(x_{t}(\mathbf{s}),W_{G,t}), \notag \ee
+
+where $z$ is the stochastic component of households' labor productivity, $x_{t}(\mathbf{s})$ is the growth-adjusted population distribution (density) function of households, and $W_{G,t}$ is the government's wealth (debt if negative) held by the public at the beginning of year $t$. 
+
+Let $\mathbf{\Psi}_{t}$ be the government's policy schedule at the beginning of year $t$,
+
+\be \mathbf{\Psi}_{t}=\bigl\{c_{G,s},tr_{tax,s},tr_{f,s},tr_{VAT,s},tr_{LS,s},\tau_{I,s}(\cdot),\tau_{P,s}(\cdot),tr_{SS,s}(\cdot),\tau_{C,s},\tau_{VAT,s},W_{G,s+1}\bigr\}_{s=t}^{\infty}, \notag \ee
+
+where $c_{G,t}$ is the government's consumption per household, $tr_{tax,t}$ is a lump-sum taxable transfer per household, $tr_{f,t}$ is a lump-sum transfer per household for the consumption floor, $tr_{LS,t}$ is a lump-sum transfer per household for any applicable value-added tax rebate, $tr_{LS,t}$ is a lump-sum transfer per household, $\tau_{I,t}(\cdot)$ is a progressive income tax function, $\tau_{P,t}(\cdot)$ is a Social Security Old-Age, Survivors, and Disability Insurance and Medicare Hospital Insurance (OASDI/HI) payroll tax function, $tr_{SS,t}(\cdot)$ is an OASDI/HI benefit function, $\tau_{C,s}$ is a flat consumption tax rate, $\tau_{VAT,s}$ is a flat value-added tax, and $W_{G,t+1}$ is the government's wealth (debt if negative) at the beginning of the next year. The government's consumption does not affect the household's decisions on private consumption and labor supply in the model economy, while lump-sum transfers directly affect the household's decisions through the intertemporal budget constraint. The proceeds from the flat consumption tax (with rate $\tau_{C,s}$) in the model economy are assumed to approximate federal tax revenues other than those from the income and payroll taxes, such as revenues from excise taxes and customs duties.
+
+
+\subsubsection{Households' Optimization Problem}
+
+Let $v(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})$ be the value function of a household at the beginning of year $t$. Then, the household's optimization problem is
+
+\be v(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}) = \max_{c,h,a'}\Bigl\{u(c,h)+\tilde{\beta}\phi_{i}E\bigl[\,
+	v(\mathbf{s}',\mathbf{S}_{t+1};\mathbf{\Psi}_{t+1})\,|\,\mathbf{s}\,\bigr]\Bigr\} \label{E:obj_fun} \ee
+
+subject to the constraints for the decision variables,
+\be	c>0,\qquad 0\leq h<h_{\max},\qquad a'\geq a'_{\min}(i,z), \ee
+
+and the law of motion of the individual state,
+\begin{align}
+	\mathbf{s}'&=(i+1,a',b',z'),\Bigr.\\
+	a'&=\frac{1}{1+\mu_t}\Bigl[\,(1+\tilde{r}_{t})a+w_{t}eh+tr_{tax,t}(i,z)+tr_{f,t}+tr_{VAT,t}+tr_{SS,t}(i,b)
+	+tr_{LS,t}+\ind_{\{j<I_r\}}q_{t}(i,z) \label{E:a_prime}\\
+	&\qquad -\tau_{I,t}(w_{t}eh,\tilde{r}_{t}a,tr_{SS,t}(i,b))-\tau_{P,t}(w_{t}eh)-oop_{t}(i,z) - \ind_{\{a'<0\}}\kappa-(1+\tau_{C,t}+\tau_{VAT,t})c\,\Bigr],  \notag\\
+	b'&=\ind_{\{i<I_{c}\}}\frac{1}{i-20}\Bigl[\,(i-21)\,b\,
+	+AWI\Big(\min(\eta w_{t}eh,\vartheta_{\max})+\max(\eta w_{t}eh-\vartheta_{\max 2},0)\Big)\,\Bigr]
+	+\ind_{\{i\geq I_{c}\}}b,\label{E:b_prime} \\
+	y &= \frac{1}{1+\tau_{C,t}+\tau_{VAT,t}}\Big[(1+\tilde{r}_{t})a+w_{t}eh+tr_{tax,t}(i,z)+tr_{VAT,t}+tr_{SS,t}(i,b)
+	+tr_{LS,t}+\ind_{\{j<I_r\}}q_{t}(i,z) \label{E:y}\\
+	&\quad -\tau_{I,t}(w_{t}eh,\tilde{r}_{t}a,tr_{SS,t}(i,b))-\tau_{P,t}(w_{t}eh)-oop_{t}(i,z) - \ind_{\{a'_{\min}(i,z)<0\}}\kappa-(1+\mu_t)a'_{\min}(i,z)\Big] \notag \\
+	tr_{f,t}&=\ind_{\{y<c_{min}\}}\Big[(1+\tau_{C,t}+\tau_{VAT,t})*c_{min} - y\Big]
+\end{align}
+
+where $u(\cdot)$ is a period utility function, a combination of Cobb--Douglas and constant relative risk aversion (CRRA),
+
+\be u(c,h)=\frac{\left[\,c^{\alpha}(h_{\max}-h)^{1-\alpha}\right]^{1-\gamma}}{1-\gamma},\label{E:utl_fun} \ee
+
+$\tilde{\beta}$ is a growth-adjusted discount factor (explained below), $\phi_{i}$ is a conditional survival rate at the end of age $i$ given that the household is alive at the beginning of age $i$, and $E[\,\cdot\,|\,\mathbf{s}\,]$ denotes the conditional expected value given the household's current state. The household's decision variables are constrained: consumption, $c$, is strictly positive; working hours, $h$, are non-negative and are less than a time endowment, $h_{\max}$; and wealth at the beginning of the next year, $a'$, satisfies a borrowing constraint, $a'\geq a'_{\min}(\mathbf{s})$.\footnote{We assume, for simplicity, that the borrowing limit (the lowest possible wealth level) is set at zero for the moment. An extension to allow borrowing to depend on the household's age $i$ is in progress.}
+
+In the law of motion, $\tilde{r}_{t}$ is the interest rate (which is a weighted average of the rate of return on capital, $r_{t}$, and the average government bond yield, $r_{D,t}$, as explained below); $w_{t}$ is the wage rate per efficiency unit of labor; $q_{t}$ is the amount of accidental bequests received (explained below); $\mathbf{1}_{\{\cdot\}}$ is an indicator function that returns 1 if the condition in $\{\ \}$ holds and 0 otherwise; $I_{c}$ is set at 65 so that the household's OASI benefits are calculated on the basis of its growth-adjusted earnings between ages 21 and 64;\footnote{In the current Social Security system, AIME is calculated as the average of the highest 35 years of growth-adjusted earnings. However, keeping the previous 35 highest earnings as the household's state variables would make the household problem computationally intractable. In the model economy, therefore, AIME is approximated by the average of growth-adjusted earnings of all ages before $I_{R}=65$.} $\eta$ is the ratio of taxable labor income to total labor income; and $\vartheta_{\max}$ is the maximum taxable earnings for OASI taxes. The household's wealth at the beginning of the next year, $a'$, is adjusted by the productivity growth rate, $1+\mu$. The average historical earnings for a household at the beginning of the following year, $b'$, are calculated recursively as a weighted average of its current (beginning-of-year) average historical earnings, $b$, adjusted by the growth in the wage, $w_{t}/w_{t-1}$ (that is, wage-indexed), and of the current OASDI taxable earnings, $\min(\eta w_{t}eh,\vartheta_{\max})$. Average historical earnings are assumed to remain constant after age 65.
+
+
+\subsubsection{The Distribution of Households}
+
+Solving the household's problem for $c$, $h$, and $a'$ for all possible states, we obtain the household's decision rules and average historical earnings in the next year as $c(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})$, $h(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})$, and
+
+\begin{align*}
+	a'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})
+	&=\frac{1}{1+\mu}\Bigl[\,(1+\tilde{r}_{t})a+w_{t}eh(\mathbf{s},
+	\mathbf{S}_{t};
+	\mathbf{\Psi}_{t})+tr_{SS,t}(i,b)+tr_{LS,t}+\ind_{\{i<Ir\}}q_{t}(i)\\
+	&\qquad-\tau_{I,t}(w_{t}eh(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}),
+	\tilde{r}_{t}a,tr_{SS,t}(i,b))
+	-\tau_{P,t}(w_{t}eh(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}))\\
+	&\qquad-(1+\tau_{C,t})c(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})
+	\,\Bigr],\\
+	b'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})
+	&=\ind_{\{i<I_c\}}\frac{1}{i\!-\!20}\Bigl[\,(i-21)\,b\,
+	\frac{w_{t}}{w_{t-1}}+\min(\eta w_{t}eh(\mathbf{s},\mathbf{S}_{t};
+	\mathbf{\Psi}_{t}),\vartheta_{\max})\,\Bigr]
+	+\ind_{\{i\geq I_c\}}b.
+\end{align*}
+
+Households are assumed to enter the economy at age 21 without any assets , no working histories, and median labor productivity. The growth-adjusted population measure of age-21 households is normalized to unity in the benchmark economy in period $t=0$. The distribution of households across states $\mathbf{s}'$ at age $i+1$ in year $t+1$ depends on the population distribution over $\mathbf{s}$ at age $i$ in year $t$ as well as on households' decisions that influence assets and earnings, as follows, for $i=21,\ldots,I$,
+
+\begin{align}
+	x_{t+1}(\mathbf{s}')&=x_{t+1}(i+1,a',b',z')\label{E:dist}\\
+	&=\frac{\phi_{i}}{1+\nu}\int_{A\times B\times Z}\mathbf{1}_{\{
+	a'=a'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}),\,
+	b'=b'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})\}}
+	\pi(z'|\,z)\,dX_{t}(\mathbf{s}),\notag
+\end{align}
+
+where $\nu$ is the population growth rate, and $\pi(z'\,|\,z)$ is a probability density function of the stochastic component of households' working ability $e'$ given that their idiosyncratic state is $z$ at age $i$.%
+\footnote{The integrand on the right-hand side is the conditional density function of the household's state at age $i+1$ given the state at age $i$---that is, $f(i+1,a',b',z'\,|\,i,a,b,z)=\mathbf{1}_{\{
+	a'=a'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}),\,
+	b'=b'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})\}}
+	\pi(z'|\,z)$. Multiplying the density function, $x(i,a,b,z)$, gives us the two-year joint density function of the state, $f(i,a,b,z,i+1,a',b',z')$. Integrating the joint density function with respect to $a$, $b$, and $z$ provides the marginal density function, $x(i+1,a',b',z')$, at age $i+1$.}
+By dividing the population in $t+1$ by $1+\nu$, the model detrends population growth and expresses the growth economy as a stationary economy.
+
+
+\subsubsection{Aggregation}
+Total private wealth, $W_{P,t}$, national wealth, $W_{t}$, domestic capital stock, $K_{t}$, and labor supply in efficiency units, $N_{t}$, are
+
+\begin{align}
+	&W_{P,t}=\sum_{i=21}^{I}\int_{A\times B\times Z}a\,dX_{t}(\mathbf{s}),
+	\label{E:capital}\\
+	&W_{t}=W_{P,t}+W_{G,t},\biggr.\\
+	&K_{t}=W_{t}+W_{F,t}=W_{P,t}+W_{F,t}+W_{G,t},\biggr.\\
+	&N_{t}=\sum_{i=21}^{I}\int_{A\times B\times Z} eh(\mathbf{s},\mathbf{S}_{t};
+	\mathbf{\Psi}_{t})\,dX_{t}(\mathbf{s}),\label{E:labor}
+\end{align}
+
+where $W_{F,t}$ is net foreign wealth, which is calibrated to capture the degree  openness of the economy. $W_{G,t}$ is the government's wealth. When $W_{G,t}<0$ the government is carrying debt and this value represents the amount held by the public. Government debt will be defined in section \ref{govt}.
+
+\subsection{The Firm}
+In each year, the representative firm chooses the capital input, $\tilde{K}_{t}$, and efficiency labor input, $\tilde{N}_{t}$, to maximize its profit, taking factor prices, $r_{t}$ and $w_{t}$, as given, where $r_{t}$ is the rate of return on capital. The firm's optimization problem is
+
+\be \max_{\tilde{K}_{t},\tilde{N}_{t}}F(\tilde{K}_{t},\tilde{N}_{t})-(r_{t}+\delta)\tilde{K}_{t}-w_{t}\tilde{N}_{t},\label{E:prof_fun} \ee
+	
+where $F(\cdot)$ is a constant-returns-to-scale production function, $F(\tilde{K}_{t},\tilde{N}_{t})=A\tilde{K}_{t}^{\theta}\tilde{N}_{t}^{1-\theta}$, with total factor productivity $A$, and $\delta$ is the depreciation rate of capital. The firm's profit-maximizing conditions are
+
+\be F_{K}(\tilde{K}_{t},\tilde{N}_{t})=r_{t}+\delta,\qquad F_{N}(\tilde{K}_{t},\tilde{N}_{t})=w_{t},\label{E:foc} \ee
+	
+and the factor markets are cleared when
+
+\be K_{t}=\tilde{K}_{t},\qquad N_{t}=\tilde{N}_{t}.\label{E:mkt_clr} \ee
+
+\subsection{The Government} \label{govt}
+We assume that the government's policy schedule, $\mathbf{\Psi}_{t}$, which determines both current and future policy as of year $t$, is credible. The government collects taxes and makes its consumption and transfer spending as scheduled in $\mathbf{\Psi}_{t}$. In addition, the government collects wealth left by deceased households (accidental bequests) and distributes that wealth uniformly to working-age households.
+
+The government's income tax revenue, $T_{I,t}$, payroll tax revenue for Social Security, $T_{P,t}$, and consumption (or other) tax revenue, $T_{C,t}$, are
+
+\begin{align}
+	&T_{I,t}(\varphi_{t})=\sum_{i=21}^{I}\int_{A\times B\times Z}
+	\tau_{I,t}(w_{t}eh(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t}),
+	\tilde{r}_{t}a,tr_{SS,t}(i,b);\varphi_{t})\,
+	dX_{t}(\mathbf{s}),\label{E:tax_i}\\
+	&T_{P,t}(\tau_{O,t},\tau_{D,t},\tau_{H,t})
+	=\sum_{i=21}^{I}\int_{A\times B\times Z}
+	\tau_{P,t}(w_{t}eh(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t});
+	\tau_{O,t},\tau_{D,t},\tau_{H,t})\,dX_{t}(\mathbf{s}),\\
+	&T_{C,t}(\tau_{C,t})=\sum_{i=21}^{I}\int_{A\times B\times Z}\tau_{C,t}\,
+	c(\mathbf{s},\mathbf{S}_{t};\!\mathbf{\Psi}_{t})\,
+	dX_{t}(\mathbf{s}),
+\end{align}
+
+where $\varphi_{t}$ is one of the parameters of the income tax function, $\tau_{O,t}$ is an OASI payroll tax rate, $\tau_{D,t}$ is a Disability Insurance (DI) tax rate, and $\tau_{H,t}$ is a Hospital Insurance (HI) tax rate. The government's consumption spending, $C_{G,t}$, non-Social Security transfer spending, $T\!R_{LS,t}$, and Social Security transfer spending, $T\!R_{SS,t}$, are
+
+\begin{align}
+	&C_{G,t}(c_{G,t})=\sum_{i=21}^{I}\int_{A\times B\times Z}c_{G,t}\,
+	dX_{t}(\mathbf{s})=c_{G,t}\sum_{i=21}^{I}p_{i},\\
+	&T\!R_{LS,t}(tr_{LS,t})=\sum_{i=21}^{I}\int_{A\times B\times Z}tr_{LS,t}\,
+	dX_{t}(\mathbf{s})=tr_{LS,t}\sum_{i=21}^{I}p_{i},\\
+	&T\!R_{SS,t}(\psi_{O,t},\psi_{D,t},\psi_{H,t},ss_{max})
+	=\sum_{i=21}^{I}\int_{A\times B\times Z}
+	tr_{SS,t}(i,b;\psi_{O,t},\psi_{D,t},\psi_{H,t},ss_{max})\,dX_{t}(\mathbf{s}),
+\end{align}
+
+where $\psi_{O,t}$ is a parameter of the OASI benefit function, $ss_{max}$ is the maximum OASI benefit amount, $\psi_{D,t}$ is the DI benefit per working-age household, and $\psi_{H,t}$ is the HI benefit per eligible household.
+
+For simplicity, we assume that the government collects wealth left by deceased households at the end of year $t$ and distributes it in a lump-sum manner to all working-age households in the same year. Because there are no aggregate shocks in the model economy, the government can perfectly predict the sum of accidental bequests (at the end of the year) and distribute it during the year.
+
+The government's revenue from those accidental bequests, $Q_{t}$, is
+
+\begin{equation}
+	Q_{t}=\sum_{i=21}^{I}\int_{A\times B\times Z}(1-\phi_{i})(1+\mu)
+	a'(\mathbf{s},\mathbf{S}_{t};\mathbf{\Psi}_{t})\,
+	dX_{t}(\mathbf{s}).
+\end{equation}
+
+The bequest received by each working-age household is
+
+\begin{equation}
+	q_{t}(i)=\left(\sum_{i=21}^{I_{R}-1}\int_{A\times B\times E}\,
+	dX_{t}(\mathbf{s})\right)^{-1}Q_{t},
+\end{equation}
+
+for $i=21,\ldots,I_{R}-1$.
+
+The law of motion of the government's wealth (debt if negative), $W_{G,t}$, is
+
+\begin{align}	
+	W_{G,t+1}(d_{G,t+1})&=\frac{1}{(1+\mu)(1+\nu)}\bigl[\,
+	(1+r_{g,t})W_{G,t}(d_{G,t})+T_{I,t}(\varphi_{t})
+	+T_{P,t}(\tau_{O,t},\tau_{D,t},\tau_{H,t})\label{E:wlt_g}\\
+	&\quad+T_{C,t}(\tau_{C,t})
+	-C_{G,t}(c_{G,t})-T\!R_{LS,t}(tr_{LS,t})
+	-T\!R_{SS,t}(\psi_{O,t},\psi_{D,t},\psi_{H,t},ss_{max})
+	\,\bigr],\notag
+\end{align}
+
+where $r_{g,t}$ is the average government bond yield such that $r_{g,t}W_{G,t}$ is the government's debt-service cost when $W_{G,t}<0$. Government bond yields are, on average, significantly lower than the average rate of return on capital. We assume that the average government bond yield, $r_{g,t}$, is a fraction of the rate of return on capital,
+
+\be	r_{g,t}=(1-\zeta)r_{t}, \notag \ee
+
+where $\zeta r_{t}\geq 0$ is the wedge between the market rate of return and the government bond yield. We also assume that government bonds are held by domestic households and foreign investors in proportion to their wealth holdings. By assumption, net foreign wealth, $W_{F,t}$, captures the degree of openness in the economy. Then, the average interest rate on household wealth, $\tilde{r}_{t}$, is the weighted average of the market rate of return and the government bond yield,
+
+\be \tilde{r}_{t}=\frac{K_{t}}{W_{P,t}+W_{F,t}}\,r_{t}-\frac{W_{G,t}}{W_{P,t}+W_{F,t}}\,r_{g,t}
+	=\biggl(1+\frac{W_{G,t}}{W_{P,t}+W_{F,t}}\,\zeta\biggr)r_{t}, \notag \ee
+	
+which is lower than the market rate of return, $r_{t}$, when the government holds debt, or $W_{G,t}<0$.
+
+\subsection{Recursive Competitive Equilibrium}
+This section defines a recursive competitive equilibrium for the model economy.
+
+Let $\mathbf{s}=(i,a,b,z)$ be the individual state of households, $\mathbf{S}_{t}=(x(\mathbf{s}),W_{G,t})$ be the state of the economy, and $\mathbf{\Psi}_{t}$ be the government policy schedule committed to at the beginning of year $t$,
+\begin{equation*}
+	\mathbf{\Psi}_{t}=\bigl\{c_{G,s},tr_{LS,s},\tau_{I,s}(\cdot),
+	\tau_{P,s}(\cdot),tr_{SS,s}(\cdot),\tau_{C,s},W_{G,s+1}
+	\bigr\}_{s=t}^{\infty}.
+\end{equation*}
+A time series of factor prices and the government policy variables,
+\begin{equation*}
+	\mathbf{\Omega}_{t}=\bigl\{r_{s},w_{s},c_{G,s},tr_{LS,s},\varphi_{s},
+	\tau_{O,s},\tau_{D,s},\tau_{H,s},\psi_{O,s},\psi_{D,s},\psi_{H,s},
+	\tau_{C,s},W_{G,s+1}\bigr\}_{s=t}^{\infty},
+\end{equation*}
+the value functions of households, $\{v(\mathbf{s},\mathbf{S}_{s};\mathbf{\Psi}_{s})\}_{s=t}^{\infty}$, the decision rules of households,
+\begin{equation*}
+	\mathbf{d}(\mathbf{s},\mathbf{S}_{s};\mathbf{\Psi}_{s})=
+	\bigl\{c(\mathbf{s},\mathbf{S}_{s};\mathbf{\Psi}_{s}),
+	h(\mathbf{s},\mathbf{S}_{s};\mathbf{\Psi}_{s}),
+	a'(\mathbf{s},\mathbf{S}_{s};\mathbf{\Psi}_{s})
+	\bigr\}_{s=t}^{\infty},
+\end{equation*}
+and the distribution of households, $\{x_{s}(\mathbf{s})\}_{s=t}^{\infty}$, are in a recursive competitive equilibrium if, for all $s=t,\ldots,\infty$, each household solves the optimization problem of equations (\ref{E:obj_fun}) through (\ref{E:b_prime}), taking $\mathbf{S}_{s}$ and $\mathbf{\Psi}_{s}$ as given; if the firm solves its profit maximization problem of equations (\ref{E:prof_fun}) and (\ref{E:foc}); if the government policy schedule satisfies equations (\ref{E:tax_i}) through (\ref{E:wlt_g}); and if the goods and factor markets clear, thus satisfying equations (\ref{E:capital}) through (\ref{E:labor}) and equation (\ref{E:mkt_clr}). The economy is in a stationary (steady-state) equilibrium---and therefore on the balanced-growth path---if, in addition, $\mathbf{S}_{s}=\mathbf{S}_{s+1}$ and $\mathbf{\Psi}_{s+1}=\mathbf{\Psi}_{s}$ for all $s=t,\ldots,\infty$.
+
+
+
+
+
+
+
+
+\section{Calibration}\label{Section: Calibration}
+
+The model is calibrated to a mix of moments that reflect the 2013 and 2018 U.S. economy with a fiscal policy that is close to the policy prevailing in 2013. That benchmark economy is assumed to be in a stationary equilibrium and thus on a balanced-growth path.\footnote{This assumption is necessary for technical reasons and means that, in the benchmark economy, the debt-to-GDP ratio is constant and that there is no aging population and thus no growth in Social Security and Medicare spending as a share of GDP.}  
+
+
+\subsection{Demographics and Preferences}
+
+The maximum possible age of a household's head in the model economy, $I$, is 100. In the model economy, households that are headed by people ages 21 to 64 are called working-age households, and households that are headed by people age $I_c=65$ or older are called elderly households, even though they can possibly work until age 75. For simplicity, we assume that all households start receiving Social Security (OASI) benefits at the current full retirement age, $I_c=65$.
+
+The labor-augmenting productivity growth rate, $\mu$, is set at 1.8 percent, which is close to the average growth rate of real GDP per capita over the 1981--2013 period. That assumption is consistent with CBO's projection that labor productivity (real output per hour worked) will grow at an average rate of 1.9 percent a year over the 2018--2028 period and 1.9-2.0 percent a year thereafter \citep{CBO_LTBO:2018}. For simplicity, the population growth rate, $\nu$, is set at a constant 1.0 percent, which is close to the average population growth rate over the 1981--2013 period. The conditional survival rate, $\phi_{i}$, at the end of age $i$, given that households are alive at the beginning of age $i$, is calculated from the Social Security Administration's 2009 period life table (\citeauthor{SSA:2014}, \citeyear{SSA:2014}, Table 4.C6). We use the weighted averages of male and female survival rates; the survival rate at the end of age $I=100$ is replaced with zero. When the population (the number of households) for age-21 households is normalized to unity, and the population growth rate is 1.0 percent, \color{red}the total population of households in the model economy becomes 43.86, and the population of working-age households (ages 21--64) becomes 35.03.\footnote{\color{red}According to the \citet{U.S.CensusBureau:2013}, the total number of households in 2011 was about 115 million. Thus, one unit of population measure in the model economy represents about $115/43.86=2.6$ million households.}
+\color{black}
+
+Households in the model economy are assumed to be a mixture of married (60 percent) and single (40 percent) households.\footnote{In the 2010 Survey of Consumer Finances sponsored by the \citet{FRS:2012}, 61 percent of households ages 21--65 and 58 percent of all households are married.} A household's period utility function is a combination of Cobb--Douglas and constant relative risk aversion,
+
+\be u(c,h)=\frac{\left[\,c^{\alpha}(h_{\max}-h)^{1-\alpha}\right]^{1-\gamma}}{1-\gamma}, \notag \ee
+
+which is consistent with a growth economy, because productivity growth leaves hours worked unchanged.\footnote{The intuitive explanation is as follows. Suppose a household maximizes its lifetime utility, $u(c,h)=[\,c^{\alpha}(h_{\max}-h)^{1-\alpha}]^{1-\gamma}/(1-\gamma)$, subject to the lifetime budget constraint, $c\leq w_{t}h$, where $c$, $h$, and $w_{t}$ are the household's lifetime consumption, working hours, and wage rate, respectively. When the utility function is one of Cobb-Douglas, like the above, the household's optimal decision is obtained as $c=\alpha w_{t}h_{\max}$ and $h=\alpha h_{\max}$. Thus, the household's lifetime consumption grows as its lifetime wage rate grows, but working hours are independent of the lifetime wage rate. When the utility function is one of constant elasticity of substitution (CES) with the elasticity less than unity, the household's lifetime working hours decrease by age cohort as its lifetime wage rate grows, which is not consistent with a growth economy.} The coefficient of relative risk aversion, $\gamma$, for the combination of consumption and leisure is set at 3.0, which is roughly in the middle of the range typically used in the macroeconomic public finance literature.\footnote{For example, \citet{Domeij.Heathcote:2004} use 1.0; \citet{Imrohorouglu.etal:1995} use 2.0; and \citet{Auerbach.Kotlikoff:1987} and \citet{Conesa.etal:2009} use 4.0.} 
+
+
+\begin{table}[H]							
+\caption{Target Variables and Values in the Benchmark Economy}							
+\label{T:Targets}							
+\begin{center}%\begin{small}							
+\begin{tabular*}{1.0\textwidth}{@{\extracolsep{\fill}}lrl}							
+\hline\hline\vphantom{\rule{0pt}{12pt}}%							
+Target variables	&	Target and &	Most influential parameter$^{a}$	\\
+	&	benchmark values	&		\\
+\hline\vphantom{\rule{0pt}{12pt}}%							
+Capital--output ratio $K_{t}/Y_{t}$	&	2.49		&	Discount factor $\beta$	\\
+Interest rate $r_{t}$	&	0.05		&	Depreciation rate $\delta$	\\
+Wage rate $w_{t}$	&	1.00		&	Total factor productivity $A$	\\
+Frisch elasticity of working hours	&	0.50		&	Consumption share parameter $\alpha$	\\
+Average working hours	&	1.00		&	Maximum working hours $h_{\max}$	\\
+\hline\vphantom{\rule{0pt}{12pt}}%							
+Effective labor income tax rate	&	20.2\%	&	Income tax adjustment factor $\varphi_{t}$	\\
+Effective capital income tax rate	&	17.8\%	&	Flat capital income tax rate $\tau_{K,t}$	\\
+Income tax revenue / GDP	&	10.2\%	&	Lump-sum portion of income tax $\tau_{LS,t}$	\\
+Payroll tax revenue / GDP	&	6.4\%	&	Taxable labor income ratio $\eta$	\\
+Other tax revenue / GDP	&	1.4\%	&	Consumption tax rate $\tau_{C,t}$	\\
+Transfer spending / GDP	&	12.4\% &	Lump-sum transfers $tr_{LS,t}$	\\
+Government debt / GDP	&	76.9\%	&	Non-productive government spending $c_{G,t}$	\\
+\hline\hline							
+\end{tabular*}							
+%\end{small}							
+\end{center}							
+\small $^{a}$ The 12 benchmark values are set to their target values by choosing 12 parameters for preferences, technology, and government policy shown in this table as just-identifying restrictions. However, each target value is mainly determined by the parameter listed in this column. See Sections 4.1--4.6 of the text for detailed explanation.
+\end{table}		
+
+Table \ref{T:Targets} shows the target variables and values in the benchmark economy. The discount factor, $\beta$, of households is set so that the capital-output ratio, $K_{t}/Y_{t}$, hits its target in the benchmark economy (see Section 4.2). \footnote{The discount factor tends to be calibrated at a higher level in an overlapping-generations model than in an infinite-horizon model. That is partly because a household actually discounts its utility of the next year by $\beta\phi_{i}$, where $\phi_{i}<1$ is the survival rate of the age $i$ household at the end of this year.} The growth-adjusted discount factor is calculated as
+
+\be \tilde{\beta}=\beta(1+\mu)^{\alpha(1-\gamma)}=1.0109. \notag \ee
+
+The share parameter of consumption, $\alpha$, and maximum working hours (time endowment), $h_{\max}$, are jointly set so that the Frisch elasticity is 0.50 and average working hours are normalized to 1.0 (see Section 4.2). Where the elasticity is calculated as
+\be \frac{h_{\max}-\bar{h}_{0}}{\bar{h}_{0}}\,\frac{1-\alpha(1-\gamma)}{\gamma}=0.5. \notag \ee
+
+The depreciation rate of the capital stock, $\delta$, is set so that the rate of return on capital, $r_{t}$, is 5.0 percent. The growth-adjusted total factor productivity, $A$, of the production function is set to normalize the wage rate, $w_{t}$, to unity in the benchmark economy (see Section 4.3).
+
+\begin{table}[H]		
+	\caption{Values of the Main Preference and Technology Parameters in the Benchmark Economy (\textit{Open setting 2: $W_F$ as a share of $W_G$})}							
+	\label{T:Parameters1a}							
+	\begin{center}							
+		\begin{tabular*}{1.0\textwidth}{@{\extracolsep{\fill}}lcrl}							
+			\hline\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			Parameter	&		&	Value	&	Comment$^{a}$	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Demographics}	&		&		&		\\
+			Maximum age	&	$I$ 	&	100	&		\\
+			Maximum age households can work	&	$I_R$	&	75	&	Full retirement age	\\
+			Minimum age to receive OASI benefits	&	$I_c$	&	65	&	Benefit claiming age for OASI/HI benefits	\\
+			Productivity growth rate	&	$\mu$	&	0.0180	&	Growth of real GDP per capita in	\\
+			&		&		&	1981--2013	\\
+			Population growth rate	& 	$\nu$	& 	0.0100	& 	Population growth in 1981--2013	\\
+			Conditional survival rates	& 	$\phi_{i}$	& 		& 	SSA's period life table for 2009	\\
+			Total population	& 		& 	43.8575	& 	When $p_{21,t}=1.0$	\\
+			Working-age population (ages 21--64)	& 		& 	35.0335	& 	When $p_{21,t}=1.0$	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Preferences}	&		&		&		\\
+			Coefficient of relative risk aversion	& 	$\gamma$	& 	3.0000	& 	Commonly used in the literature	\\
+			Consumption share parameter 	& 	$\alpha$	& 	0.7082	& 	Target: Frisch elasticity $=0.5$	\\
+			Maximum working hours	&	$h_{\max}$	&	1.6208	& 	Target: average work hours $=1.0$	\\
+			Discount factor	& 	$\beta $	& 	1.0346	& 	Target: $K_{t}/Y_{t}=2.49$	\\
+			Growth-adjusted discount factor	& 	$\tilde{\beta} $	& 	1.0109	& 	$\tilde{\beta}=\beta(1+\mu)^{\alpha(1-\gamma)}$	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Production technology, wage process}	&		&		&		\\
+			Share parameter of capital stock	& 	$\theta$	& 	0.3485	& 	NIPA data in 2009--2013	\\
+			Depreciation rate of capital stock	& 	$\delta$	& 	0.0900	& 	Target: $r_{t}=0.05$	\\
+			Total factor productivity	& 	$A$	& 	0.9620	& 	Target: $w_{t}=1.0$	\\
+			Autocorrelation parameter of log wage	& 	$\rho$	& 	0.9500	& 	Commonly used in the literature	\\
+			Standard deviation of log wage shocks	& 	$\sigma$	& 	0.2600	& 	Target: variance of log earnings by	\\
+			& 		& 		& 	\quad  age in the 2010 SCF	\\
+			Median working ability	& 	$\bar{e}_{i}$	& 		& 	Estimated by OLS	\\
+			\hline\hline							
+		\end{tabular*}							
+	\end{center}
+	\small $^{a}$ See Sections 4.1--4.3 of the text for detailed explanations. Targets are the values calibrated in the benchmark economy.
+	\\
+	\itshape Notes\normalfont :  OASI = Old-Age and Survivors Insurance; HI = Hospital Insurance; GDP = gross domestic product; SSA = Social Security Administration; NIPA = national income and product accounts; SCF = Survey of Consumer Finances; and OLS = ordinary least squares. \vspace{1.0in}							
+\end{table}	
+
+\subsection{Government Policy}
+
+Among the government's policy variables, the individual income tax adjustment factor, $\varphi_{t}$, is set so that the average effective marginal tax rate on labor income is 20.2 percent;\footnote{That average of the effective marginal tax rates on labor income does not include the effective rate of the Social Security payroll tax. With that tax rate included, the average effective marginal tax rate on labor income is about 30 percent.} and the flat capital income tax rate, $\tau_{K,t}$, is set so that the effective tax rate on capital income is 17.8\% percent in the benchmark economy (see Section 4.4). The lump-sum tax portion of the income tax, $\tau_{LS}$, is set so that total federal income tax revenue is 10.2 percent of GDP; the share of total labor income that is taxable, $\eta$, is set so that total OASDI/HI payroll tax revenue is 6.4 percent of GDP; and the consumption tax rate, $\tau_{C,t}$, is set so that the revenue from that tax is 1.4 percent of GDP in the benchmark economy (see Sections 4.4 and 4.6). Lump-sum transfers, $tr_{LS,t}$, are set so that the government's total transfer spending (including for Social Security) is 12.4 percent of GDP; and the government's consumption, $c_{G,t}$, and debt, $d_{G,t}$, are set so that the debt-to-GDP ratio is stable at 76.9 percent in the benchmark economy (2018 value from FORTRAN code) (see Section 4.6).
+
+Table \ref{T:Parameters1a} shows the values of the main preference and technology parameters in the model economy, and Table \ref{T:Parameters1b} (on page \pageref{T:Parameters1b}) shows the values of the government policy parameters in the benchmark economy. All of the parameter values in Table \ref{T:Parameters1a} are fixed all of the time, but some of the policy parameter values in Table \ref{T:Parameters1b} are changed over time, exogenously and endogenously, in policy experiments.
+
+\subsubsection{The Progressive Income Tax Function}
+The average (taxable) household labor income for people ages 21 to 64 is \$64,162 in the 2010 Survey of Consumer Finances \citep{FRS:2012}.\footnote{The model in this paper was constructed and calibrated before the Federal Reserve Board released the 2013 SCF in September 2014.}  Because labor income per capita increased by 12.8 percent between 2010 and 2013 according to the NIPA data, the average (taxable) labor income is estimated at \$72,375 in 2013. We assume that a fraction, $\eta<1$, of labor income (compensation and part of proprietors' income) in the NIPA data is taxable for the individual income tax and Social Security payroll tax. That parameter, $\eta$, is set so that the ratio of OASDI/HI payroll tax revenue to GDP is 0.064 (6.4 percent) in the benchmark economy. Under that assumption, one model unit corresponds to $\$72,375/(1.4747\times 0.7142)\approx\$68,720$ in the 2013 U.S.\ economy, where 1.4747 is the average labor income in model units. The model uses that ratio to convert some policy variables into the model parameters.
+
+The income tax function in the model economy includes both the individual income tax and the corporate income tax. We assume it is a combination of a smooth progressive labor income tax function, a flat capital income tax function, and a lump-sum tax (constant),
+
+\begin{align*}
+\tau_{I,t}(r_{t}a,w_{t}eh,tr_{SS,t})
+&=\tau_{L,t}(w_{t}eh)+\tau_{K,t}r_{t}a+\tau_{LS,t}\Bigr.\\
+&=\varphi_{t}\bigl\{\varphi_{0}\bigl[\,(y_{L}-d)-\bigl(
+(y_{L}-d)^{-\varphi_{1}}+\varphi_{2}\bigr)^{-1/\varphi_{1}}\,\bigr]
++\tau_{K,t}y_{K}\bigr\}+\tau_{LS,t},
+\end{align*}
+
+where $y_{L}-d=\eta\!\cdot\!w_{t}eh-d$ is the household's taxable labor income after approximated deductions and exemptions, and $y_{K}=r_{N,t}a=(\tilde{r}_{t}+\pi_{e})a$ is capital income that includes corporate income and imputed rent from owner-occupied housing.\footnote{For simplicity, we assume that OASI benefits are not taxed. If taxes on OASI benefits were considered, the losses under the income tax policy for retirees and those close to retirement would be slightly larger.} The expected inflation rate, $\pi_{e}$, is set at 2.0 percent. The functional form of a smooth progressive labor income tax is taken from \citet{Gouveia.Strauss:1994}.
+
+We obtain the parameters, $\varphi_{0}$, $\varphi_{1}$, and $\varphi_{2}$, of the Gouveia--Strauss function as well as deductions and exemptions, $d$, by OLS with the 2014 effective labor income tax schedule estimated by \citet{CBO:2014a}. The first parameter, $\varphi_{0}$, shows the limit of the effective marginal labor income tax rate as taxable income goes to infinity; the second parameter, $\varphi_{1}$, shows the curvature of the tax function; and the third parameter, $\varphi_{2}$, is used to adjust the scale of the tax function. The additional parameter, $\varphi_{t}$, is set so that the effective marginal tax rate on labor income (excluding the payroll tax rate for Social Security) is, on average, 20.2 percent in the benchmark economy as estimated by CBO. The flat capital income tax rate, $\tau_{K,t}$, is set to 12.9 percent; however, after the adjustment by $\varphi_t$ and $\pi_e$ the effective tax rate on real capital income becomes 17.8 percent.\footnote{For details on how this rate was calculated, see \citet{CBO:2014c}.} The lump-sum income tax parameter, $\tau_{LS,t}$, is set to make income tax revenue (the sum of revenues from the individual income tax and corporate income tax) equal to 10.2 percent of GDP in the benchmark economy. The values for the effective marginal tax rate on labor income, the flat capital income tax rate, and the ratio of income tax revenue to GDP are estimated by \citet{CBO:2014a} for 2014.
+
+	
+
+\subsubsection{The Social Security and Hospital Insurance System}
+
+We refer to Social Security's Old-Age, Survivors, and Disability Insurance benefits and Medicare’s Hospital Insurance benefits collectively as OASDI/HI benefits and define the OASDI/HI payroll tax function to be
+
+\begin{align*}
+\tau_{P,t}(w_{t}eh)&=(\tau_{O,t}+\tau_{D,t})
+\min(\eta\!\cdot\!w_{t}eh,\vartheta_{\max})\\
+&\qquad+\tau_{H,t}\,\eta\!\cdot\!w_{t}eh
++\tau_{H2}\max(\eta\!\cdot\!w_{t}eh-\vartheta_{H},0),
+\end{align*}
+
+where $\tau_{O,t}$ is the flat Old-Age and Survivors Insurance tax rate, $\tau_{D,t}$ is the flat Disability Insurance tax rate, $\tau_{H,t}$ is a Hospital Insurance (Part A of Medicare) tax rate, and $\tau_{H2}$ is an HI surtax rate for households with high labor income (covered earnings greater than \$200,000 for single taxpayers and \$250,000 for married couples filing jointly). The first three tax rates include the portion paid by employers. When labor income is below the threshold of maximum taxable earnings, the statutory OASI tax rate is 10.6 percent, including 5.3 percent paid by employers; thus, $\tau_{O,t}=0.106$. The effective DI tax, HI tax, and HI surtax rates are set at $\tau_{D,t}=0.018$, $\tau_{H,t}=0.029$, and $\tau_{H2}=0.009$, respectively. The maximum taxable earnings per worker for the OASDI payroll tax were \$113,700 in 2013 \citep{SSA:2014}. Because the model is based on household units, that single-worker figure must be translated to apply to households. We assume that 60 percent of households are married households, of which two-thirds are two-earner households---meaning that 40 percent of all households are two-earner households. Thus, in the model economy, maximum taxable earnings for the OASDI payroll tax, $\vartheta_{\max}$, are the weighted average of the maximums for two-earner households and one-earner households, or $0.4\times2\times\$113{,}700+0.6\times\$113{,}700=\$159{,}180$ in 2013. We also set the threshold for the HI surtax at $0.4\times\$200{,}000+0.6\times\$250{,}000=\$230{,}000$ in 2013.
+
+The OASDI/HI benefit function is
+
+\begin{align*}
+tr_{SS,t}(i,b)&=\min\Big(\mathbf{1}_{\{i\geq I_{C}\}}\psi_{O,t}\frac{1}{(1+\mu)^{i-60}}
+\bigl\{0.90\min(b,\vartheta_{1})
++0.32\max\left[\,\min(b,\vartheta_{2})-\vartheta_{1},0\,\right]\\
+&\qquad+0.15\max(b-\vartheta_{2},0)\bigr\},ss_{max}\Big)
++\mathbf{1}_{\{i<I_{C}\}}\psi_{D,t}+\mathbf{1}_{\{i\geq I_{C}\}}\psi_{H,t},
+\end{align*}
+
+where the age at which households claim retirement benefits is $I_C$ (set at 65 in the baseline). The OASI benefit amount depends on $\vartheta_{1}$ and $\vartheta_{2}$ which are the thresholds for the three replacement-rate brackets (90 percent, 32 percent, and 15 percent) used to calculate a household's OASI benefit from its average historical earnings. The OASI benefit is capped at the rate $ss_{max}$ (which was \$30,396 in 2013). $\psi_{O,t}$ is an adjustment factor that ensures that OASI expenditures equal OASI payroll tax revenues, $\psi_{D,t}$ is a household's DI benefit, and $\psi_{H,t}$ is a household's HI benefit.%
+\footnote{Average indexed monthly earnings for people age 60 or older are indexed to changes in prices rather than to changes in wages, and the thresholds for the three replacement-rate brackets are also price-indexed for each age cohort. To simplify the computation in the growth economy, the model first assumes that all of the above variables are wage-indexed, and then it converts Social Security benefits to be price-indexed by dividing the benefits by $(1+\mu)^{i-60}$.}
+In the current U.S.\ Social Security system, the thresholds to calculate primary insurance amounts are set for each age cohort when a worker reaches age 62. In the model economy, the growth-adjusted thresholds are fixed for all age cohorts, and the PIA is adjusted later by using the long-term productivity growth rate and the number of years after age 60. Thus, the model simply uses the thresholds for the age 62 cohort in 2011 after scale adjustment.
+
+We assume that the Social Security and Hospital Insurance systems are pay-as-you-go and that their outlays equal their payroll tax revenues in the benchmark economy. The OASI benefit parameter, $\psi_{O,t}$, is set to ensure that OASI expenditures equal OASI payroll tax revenues, which is roughly consistent with the data when benefits include survivors' and spousal benefits. We also assume, for simplicity, that DI benefits are received only by working-age households (ages 21 to 64) and that HI benefits are received only by elderly households (ages 65 to 100).%
+\footnote{As Table \ref{T:Budget1} below shows, those assumptions cause the share of transfers going to elderly households to be 56.2 percent, which is close to the share in the data.}
+The benefit parameters, $\psi_{D,t}$ and $\psi_{H,t}$, are set to ensure that benefits paid by the DI and HI programs equal their respective payroll tax receipts in the benchmark economy.%
+\footnote{The model does not incorporate risks of disability or ill health. Instead, DI benefits are uniformly distributed to working-age households and HI benefits to elderly households. The model implicitly assumes that the government transfers the actuarially fair insurance premium values of DI and HI to those households.}
+
+
+\begin{table}[H]							
+	\caption{Values of the Government Policy Parameters in the Benchmark Economy}							
+	\label{T:Parameters1b}							
+	\begin{center}							
+		\begin{tabular*}{1.0\textwidth}{@{\extracolsep{\fill}}lcrl}							
+			\hline\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			Parameter	&		&	Value	&	Comment$^{\ a}$	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Model units}	&		&		&		\\
+			Taxable labor income ratio	&	$\eta$	&	0.7130	&	Target: $T_{P,t}/GDP_{t}=6.4\%$	\\
+			Scale adjustment$^{\ b}$	&		&	68.870	& 	Average earnings \$72,375 in 2013	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Progressive income tax}	&		&		&		\\
+			Income tax adjustment factor	& 	$\varphi_{t}$	& 	0.9567	& 	Target: avg. labor inc. tax rate 20.2\%	\\
+			Labor income tax: tax rate limit	& 	$\varphi_{0}$	& 	0.3780	& 	\multirow{3}{*}{$\Biggr\}$ Estimated by OLS}	\\
+			\phantom{Labor income tax}: curvature	& 	$\varphi_{1}$	& 	0.4528	& 		\\
+			\phantom{Labor income tax}: scale	& 	$\varphi_{2}$	& 	0.2349	& 		\\
+			\phantom{Labor income tax}: deduction/exemptions	& 	$d$	& 	0.1455	& 	Fixed at \$10,000 in 2013	\\
+			Capital income tax rate	& 	$\tau_{K,t}$	& 	0.1292	&	Target: avg. cap. inc. tax rate 17.8\%	\\
+			Lump-sum tax portion of income tax	& 	$\tau_{LS}$	& 	0.0312	&	$T_{I,t}/GDP_{t}=0.102$	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Social Security system}	&		&		&		\\
+			Social Security payroll tax rate: OASI	& 	$\tau_{O,t}$	& 	0.1060	& 	\multirow{4}{*}{$\Biggr\}$ Current-law tax rates}	\\
+			\phantom{Social Security payroll tax rate}: DI	& 	$\tau_{D,t}$	& 	0.0180	& 		\\
+			Medicare payroll tax rate: HI	& 	$\tau_{H,t}$	& 	0.0290	& 		\\
+			\phantom{Medicare payroll tax rate}: HI surtax 	& 	$\tau_{H2}$	& 	0.0090	& 		\\
+			Maximum taxable earnings$^{\ c}$	& 	$\vartheta_{\max}$	& 	2.3164	& 	$1.4\!\times\!\$113{,}700=\$159{,}180$ in 2013	\\
+			HI surtax threshold$^{\ d}$	&	$\vartheta_{H}$	&	3.3470	&	$0.4\!\times\!\$200{,}000+0.6\!\times\!\$250{,}000$	\\
+			OASI benefit adjustment factor	& 	$\psi_{O,t}$	& 	1.7866	& 	Target: $T\!R_{SS,t}=T_{P,t}$	\\
+			Maximum OASI Benefit Amount  & $ss_{max}$      & 0.4423    & Target: \$30,396 in 2013 \\
+			PIA bend points: 0.90 - 0.32$^{\ c}$	& 	$\vartheta_{1}$	& 	0.1934	& 	$1.4\!\times\!\$791\!\times\! 12=\$13{,}289$ in 2013	\\
+			\phantom{PIA bend points}: 0.32 - 0.15$^{\ c}$	& 	$\vartheta_{2}$	& 	1.1657	& 	$1.4\!\times\!\$4{,}517\!\times\! 12=\$80{,}102$ in 2013	\\
+			Social Security benefits: DI	& 	$\psi_{D,t}$	& 	0.0175	& 	Budget balanced given DI tax rate	\\
+			Medicare benefits: HI 	& 	$\psi_{H,t}$	& 	0.1315	& 	Budget balanced given HI tax rate	\\
+			\hline\vphantom{\rule{0pt}{12.5pt}}%							
+			\emph{Other policy variables}	&		&		&		\\
+			Govt. consumption per household	& 	$c_{G,t}$	& 	0.1041	& 	Target: $D_{G,t}/GDP_{T}=74\%$	\\
+			Lump-sum transfers per household	& 	$tr_{LS,t}$	& 	0.1151	& 	Target: transfers$/GDP_{t}=12.4\%$	\\
+			Consumption tax rate	&	$\tau_{C,t}$	&	0.0217	&	Target: $T_{C,t}/Y_{t}=1.4\%$	\\
+			Government debt per household	& 	$d_{G,t}$	& 	1.4183	& 	Target: $D_{G,t}/GDP_{t}=74\%$	\\
+			Accidental bequests per household	& 	$q_{t}$	& 	0.0662	& 	$Q_{t}/$working-age population	\\
+			Wealth held by foreigners	&	$W_{F,t}$	&		&	Target: $W_{F,t}/W_{G,t}=0.70$	\\
+			Ratio of risk premium to interest rate	&	$\xi$	&	0.4000	&	Target: $r_{t}(1-\xi)=0.03$	\\
+			\hline\hline							
+		\end{tabular*}							
+	\end{center}							
+	\small $^{a}$ See Sections 4.4--4.6 of the text for detailed explanations. Targets are the values that the benchmark economy is calibrated to.\\							
+	$^{b}$ A unit of income or assets in the model economy corresponds to \$59,646 in 2013 dollars.\\							
+	$^{c}$ 40 percent of all households are assumed to be two-earner households, and 60 percent are assumed to be one-earner households. The thresholds are multiplied by the average number of workers, $0.40x2+0.60x1=1.4$, in a working-age household.\\
+	$^{d}$ 40 percent are assumed to be single taxpayers and 60 percent married couples filing jointly.\\  
+	\itshape Notes\normalfont : OLS = ordinary least squares; OASI = Old-Age and Survivors Insurance; DI = Disability Insurance; HI = Hospital Insurance; PIA = primary insurance amount.		
+\end{table}		
+
+\subsubsection{The Other Policy Variables}
+
+Every household receives a lump-sum transfer from the government,  $tr_{LS,t}$, which is calibrated such that the total transfer payments made in the economy equal 12.4\% of GDP. Non-productive government spending is the residual policy variable that ensures the government's debt (as a share of GDP) is stable. In the benchmark economy this amounts to 5.5\% of GDP.
+
+The rate of the national consumption tax---which approximates excise and other taxes---is set so that consumption tax revenue is 1.4 percent of GDP in the benchmark economy. Government wealth, $W_{G,t}$, is set so that, as explained above, the debt-to-GDP ratio is equal to 0.769 in the benchmark economy. Also, net foreign wealth, $W_{F,t}$, is set so that the ratio of that wealth (which is equivalent to the negative of the U.S.\ investment position) to government debt is 0.70. Finally, the ratio of risk premium to interest rate, $\xi$, is assumed to be 0.4 so that the average government bond yield is 3.0 percent in the benchmark economy.\footnote{That rate is similar to the 3.1 percent average rate on 10-year Treasury notes for the 1965--2007 and 1990--2007 periods, but it is somewhat higher than the long-term interest rate on government debt projected in CBO's \textit{The 2015 Long-Term Budget Outlook} (\citeauthor{CBO_LTBO:2015}, \citeyear{CBO_LTBO:2015}). Incorporating a lower interest rate would have modest effects on our quantitative results and would leave the relative ranking of our stylized policies unchanged.}
+
+\begin{table}[H]											
+	\caption{The Government's Budget in the Benchmark Economy (Percentage of GDP)}											
+	\label{T:Budget1}											
+	\begin{center}											
+		\begin{tabular*}{1.0\textwidth}{@{\extracolsep{\fill}}lr|lrrr}											
+			\hline\hline\vphantom{\rule{0pt}{12.5pt}}%											
+			\multirow{2}{*}{Revenue}	&	\multirow{2}{*}{Total}	&	\multirow{2}{*}{Expenditure}	&	\multicolumn{1}{c}{Working Age}	&	\multicolumn{1}{c}{Elderly}	&	\multirow{2}{*}{Total}	\\
+			&		&		&	\multicolumn{1}{c}{(ages 21--64)}	&	\multicolumn{1}{c}{(ages 65+)}	&	\phantom{(ages 65)}	\\
+			\hline\vphantom{\rule{0pt}{12pt}}%											
+			Individual and	&	10.2	&	Govt. transfers	&	5.5	&	6.9	&	12.4	\\
+			\quad corporate income tax	&		&	 (\% of transfers)	&	44.4	&	55.6	&		\\
+			Social Security payroll tax$^{a}$	&	5.0	&	\quad Social Security	&	0.6	&	4.3	&	5.0	\\
+			\quad OASI	&	4.3	&	\qquad OASI	&	0.0	&	4.3	&	4.3	\\
+			\quad DI	&	0.7	&	\qquad DI	&	0.7	&	0.0	&	0.7	\\
+			Medicare (HI) payroll tax$^{a}$&	1.4	&	\quad Medicare (HI)	&	0.0	&	1.4	&	1.4	\\
+			Consumption tax 	&	1.4	&	\quad Other transfers	&	4.8	&	1.2	&	6.0	\\
+			&		&	Govt. consumption	&		&		&	5.5	\\
+			&		&	Interest payments	&		&		&	2.2	\\
+			Total revenue$^{b}$	&	18.0	&	Total expenditure$^{b}$	&		&		&	20.1	\\
+			\hline\hline											
+		\end{tabular*}											
+	\end{center}											
+	\small $^{a}$ OASDI/HI payroll tax revenue was 5.6 percent of GDP in 2012 including reimbursement from the general fund of the Treasury (because of a temporary statutory reduction in the tax rate, or payroll tax holiday). The total revenue of the OASDI/HI programs was close to 6.4 percent of GDP in 2012 if interest income in the programs' trust funds is included.\\
+	$^{b}$ With a government-debt-to-GDP ratio of 0.74, a productivity growth rate of 1.8 percent, and a population growth rate of 1.0 percent, the total budget deficit that keeps the debt-to-GDP ratio constant is $0.74\times(1.8+1.0)=2.1$ percent of GDP in the benchmark economy, which equals the difference between total revenue and expenditure (after accounting for rounding). \\
+	\itshape Notes\normalfont :  GDP = gross domestic product; OASI = Old-Age and Survivors Insurance; DI = Disability Insurance; and HI = Hospital Insurance.\\											
+\end{table}										
+
+Table \ref{T:Budget1} shows the government's revenue and spending in the stationary-population benchmark economy. The government's revenue is roughly matched with the 2014 U.S.\ tax revenue projected by the \citet{CBO:2014a}. The government's spending in the benchmark economy is adjusted so that the government's budget is sustainable with the debt-to-GDP ratio of 76.9 percent.
+
+The share of government transfers going to elderly households is 55.6 percent in the model economy, which is very close to the share, 55.2 percent, calculated from the data in \citet{CBO:2013a}. Total government transfers are 12.4 percent of GDP in the model economy, which is also very close to the size of mandatory government spending, 12.3 percent of GDP, in \citet{CBO:2014a}.
+
+
+\subsection{Openness to the Rest-of-the-World}
+
+In this benchmark economy, the ratio of federal debt held by the public (at the beginning of the year), $W_{G,t}$, to GDP is set at -0.769, which is close to the level at the beginning of 2018. The level of net foreign wealth (at the beginning of the year), $W_{F,t}$, depends on the openness assumption. In our preferred setup, net foreign wealth is a constant share of total government debt.\textbf{Calibrating this ratio will be CRUCIAL. The Penn Wharton Budget Model uses ~0.40 but the FORTRAN code method using $\chi$ appears to have the ratio closer to 0.70.}
+
+In that setting, the ratio of national wealth, $W_{t}$, to GDP in the benchmark economy is $2.25-0.30=1.95$, and the ratio of private wealth (held by U.S. residents), $W_{P,t}$, to GDP is $1.95+0.70=2.65$. 
+
+
+\subsection{The Production Technology and the Wage Process}
+
+According to the national income and product accounts (NIPAs), during the 2009--2013 period, labor income averaged 58.9 percent of GDP, and gross capital income averaged  31.5 percent of GDP.\footnote{See NIPA Tables 1.1.5.\ and 1.10.\ at \url{http://www.bea.gov/iTable/index_nipa.cfm}. In calculating those income shares, we allocate proprietors' income proportionally among labor income and capital income.} The remaining 9.6 percent of GDP represents taxes on production and imports minus subsidies (6.6 percent) and depreciation of the government's fixed assets (3.0 percent). The production function of the representative firm is one of Cobb--Douglas, and we define output in the model economy as
+
+\be Y_{t}=F(K_{t},N_{t})=AK_t^{\theta}N_t^{1-\theta}=0.904\,Y_{GDP,t}, \notag \ee
+
+excluding the previously mentioned 9.6 percent.\footnote{Here, we define the model output, $Y_{t}$, as the sum of labor income and gross capital income, which is smaller than GDP. We exclude taxes on production and imports from $Y_{t}$ because those taxes are mostly held by state and local governments, and the model abstracts from those governments and international trade. We also exclude depreciation of the government's capital stock from $Y_{t}$ because it cannot be accounted for using the simple Cobb--Douglas production function explained below.} In the fixed assets accounts (FAA) data, the ratio of private fixed capital stock (at the beginning of the year), $K_{t}$, to GDP averages about 2.25 over the 2009--2013 period.\footnote{See FAA Table 1.1.\ at \url{http://www.bea.gov/iTable/index_FA.cfm}. To calculate that ratio, we convert end-of-year estimates of fixed assets to beginning-of-year values.} Thus, the capital--output ratio, $K_{t}/Y_{t}$, in the benchmark economy is targeted at $2.25/0.904=2.49$.\footnote{We do not include the government's fixed assets in the production function because most of the government's capital income is not counted in GDP or government revenue.} 
+
+Consequently, the share parameter of capital stock, $\theta$, is set equal to $0.315/(0.589+0.315)=0.3485$.
+
+The working ability, $e_{i}$, of an age-$i$ household in the model economy is assumed to satisfy
+
+\be \ln e_{i}=\ln\bar{e}_{i}+\ln z_{i} \notag \ee
+
+for $i=21,\ldots,75$, where $\bar{e}_{i}$ is the median working ability at age $i$, and $z_{i}$ is the persistent shock that follows an AR(1) process,
+
+\be \ln z_{i}=\rho\ln z_{i-1}+\epsilon_{i} \notag \ee
+
+for $i=21,\ldots,75$. The temporary shock, $\epsilon_{i}$, is normally distributed, $\epsilon_{i}\sim N(0,\sigma^{2})$, and the initial distribution of the log-persistent shock satisfies $\ln z_{20}\sim N(0,\sigma^{2}_{\ln z_{20}})$.
+
+The median working ability, $\bar{e}_{i}$, for ages 21 to 75 is constructed from the 2011 Median Earnings of Workers by Age table (Table 4.B6, male workers) in \citet{SSA:2014}. Under the assumption that those male median workers are mostly full-time workers, the profile of median working ability by age is estimated by using ordinary least squares (OLS) to regress the median earnings on age for ages 25 to 64 and is extrapolated for ages 21 to 24 and 65 to 75.\footnote{We use the male median earnings data to estimate the shape of the age--working ability profile because a larger proportion of female workers choose not to work full time, meaning that their actual earnings are not a good representation of their earnings ability. Thus we implicitly assume that the lifecycle pattern of potential earnings of women matches that of men. We extrapolate rather than using the actual data on individuals ages 21 to 24 and 65 to 75 because they are more likely to be in school or voluntarily retired.}
+
+The autocorrelation parameter, $\rho$, of the log-persistent shock is set at 0.95, which is approximately in the middle of the range in the literature.\footnote{For example, \citet{Domeij.Heathcote:2004} use 0.90; \citet{Huggett:1996} uses 0.96; and \citet{Conesa.etal:2009} use 0.98.}
+Given the initial variance, $\sigma^{2}_{\ln z_{20}}$, the variance of the log-persistent shock, $\ln z_{i}$, is calculated recursively as
+
+\be \sigma^{2}_{\ln z_{i}}=\rho^{2}\sigma^{2}_{\ln z_{i-1}}+\sigma^{2} \notag \ee
+
+for $i=21,\ldots,75$. To align the wage process to the U.S.\ data, the standard deviation, $\sigma$, of the transitory shock, $\epsilon_{i}$, is set at 0.260, and the initial variance, $\sigma^{2}_{\ln z_{20}}$, of the log-persistent shock is set at a fraction of its limiting variance,
+
+\be \sigma^{2}_{\ln z_{20}}=0.40\lim_{i\to\infty}\sigma^{2}_{\ln z_{i}}=0.40\times\frac{\sigma^{2}}{1-\rho^{2}}=0.40\times 0.6933=0.2773. \notag \ee
+
+The coefficient $0.40<1$ is chosen so that the variance of log earnings increases with the age of the household (at least until about full retirement age).
+
+The log-persistent shock is first discretized into 13 nodes for each age by using Gauss--Hermite quadrature; then the number of nodes for $\ln z_{i}$ is reduced to 7 by combining 4 nodes in each tail distribution into one node. The unconditional probability distribution of the 7 nodes is
+\[
+	\pi_{i}=\bigl(
+	\begin{matrix}
+	0.0155 & 0.0729 & 0.2139 & 0.3953 & 0.2139 & 0.0729 & 0.0155\\
+	\end{matrix}
+	\bigr)
+\]
+for $i=21,\ldots,75$. The Markov transition matrix of an age-$i$ household, $\Pi_{i}=[\,\pi(e_{i+1}^{j'}\,|\,e_{i}^{j})\,]$, that corresponds to $\rho=0.95$ is calculated by using the bivariate normal distribution function as
+\begin{equation*}
+	\Pi_{i}=\left(
+	\begin{matrix}
+	0.8460 & 0.1540 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+	0.0403 & 0.8377 & 0.1220 & 0.0000 & 0.0000 & 0.0000 & 0.0000 \\
+	0.0000 & 0.0546 & 0.8504 & 0.0950 & 0.0000 & 0.0000 & 0.0000 \\
+	0.0000 & 0.0000 & 0.0726 & 0.8547 & 0.0726 & 0.0000 & 0.0000 \\
+	0.0000 & 0.0000 & 0.0000 & 0.0950 & 0.8504 & 0.0546 & 0.0000 \\
+	0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.1220 & 0.8377 & 0.0403 \\
+	0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.0000 & 0.1540 & 0.8460 \\
+	\end{matrix}
+	\right)
+\end{equation*}
+for $i=21,\ldots,74$.
+
+
+
+\section{Calibration of the Baseline Transition Path}
+
+The OLG model coded in FORTRAN targets a host of moments over the first 10-20 years of the transition path to match the CBO's LTBO. These targets generally concern various categories of outlays and revenues, as a share of GDP. We need to determine what moments we want, and can, target from the LTBO. These will likely be different from those we are currently targeting. The new code targets debt-to-GDP over a specified period of time using non-productive government spending. If we want to add additional targets we can do so in a similar format, convergence may become challenging if too many paths are trying to be hit simultaneously. It's worth noting that this part of the calibration is only necessary for the baseline run, and all policy variables are held at baseline values during counterfactual runs.
+
+
+\section{Computational Methodology}
+
+This section follows the structure of \citet{Nishiyama.Smetters:2014}.
+
+We solve the households' optimization problem recursively from age $j=J$ to age 1 by discretizing the state variables as follows: the asset space, $A=[0,a_{max}]$, into $na = 70$ nodes (non-linearly spaced), the average historical labor earnings space, $B=[0,b_{max}]$, into $nb=20$ nodes (linearly spaced), and the working ability space, $E=[0,e_{max}]$, into $nz = 7$ nodes for each age $j\in\{1,j_R\}$. Since households are forced to retire at age $j=j_R$ in the model, $e_j=0 \quad \forall j\ge J_R$.
+
+In addition to discretizing the state-space, the households' choice set is also discretized so that we may use a robust grid search methodology to solve the problem. Households savings choice set is constrained to points on the asset grid and their  labor supply decision is discretized into $nn = 12$ nodes (evenly spaced) which includes the option of withdrawing from the labor market.
+
+Let $\Omega_t$ be a time series of vectors of factor prices and government policy variables that describes the future path of the aggregate economy. 
+
+\subsection{Solving the Households' Problem} \label{HHsolve}
+
+As mentioned in the previous section, the households' problem is solved via a grid search methodology that exploits the monotonicity of the households conditional savings policy function, $a'(s_t;\Omega_t)$, where $s = \{j,ia,ib,iz\}$ is the household's state space at time $t$. For each point in the state space the household's budget constraint is evaluated for each labor supply (when applicable) and savings option. The maximal value is stored along with the corresponding value and policy functions:\\
+$\{v(s_t;\Omega_t),,c(s_t;\Omega_t),n(s_t;\Omega_t),l(s_t;\Omega_t),a'(s_t;\Omega_t),b'(s_t;\Omega_t)\}$. When evaluating households' continuation value with respect to their labor supply's effect on average labor earnings we use linear interpolation.
+
+\subsection{Finding the Distribution of Households}
+
+Let $x_t(s) = x_t(j,ia,ib,iz)$ be the discrete population distribution function of households in period $t$, where the population of age $j=1$ households is normalized to unity in the initial steady state.
+\be \sum_{iz=1}^{nz} x_1(1,0,0,iz) = 1 \notag \ee
+
+The law of motion of the growth adjusted population distribution is:
+\begin{align*}
+x_{t+1}(&j+1,\hat{a}'(s_t;\Omega_t),[\hat{b}'(s_t;\Omega_t):\hat{b}'(s_t;\Omega_t)+1],iz') =\\
+\frac{\phi_j}{1+\nu} \sum_{iz=1}^{nz}
+&\begin{bmatrix}
+\frac{B(\hat{b}'(s_t;\Omega_t)+1)-b'(s_t;\Omega_t)}{B(\hat{b}'(s_t;\Omega_t)+1)-B(\hat{b}'(s_t;\Omega_t))}\\
+1-\frac{B(\hat{b}'(s_t;\Omega_t)+1)-b'(s_t;\Omega_t)}{B(\hat{b}'(s_t;\Omega_t)+1)-B(\hat{b}'(s_t;\Omega_t))}
+\end{bmatrix}  \pi(iz'|iz)*x_{t}(j,ia,ib,iz)
+\end{align*}
+where $\{\hat{a}'(s_t;\Omega_t),\hat{b}'(s_t;\Omega_t)\}$ denote the policy functions that return indexes that correspond to nodes on the asset ($A$) and average labor earnings ($B$) grids respectively. Households with average lifetime earnings at the end of period $t$ of $b'(s_t;\Omega_t)$ are proportionally distributed across grid points $\hat{b}'(s_t;\Omega_t)$ and $\hat{b}'(s_t;\Omega_t)+1$.
+
+\subsection{Solving for the Steady State}
+
+The steady-state equilibrium with time-invariant government policy is obtained as follows:
+\begin{enumerate}
+	\item Set the initial values of factor prices and government policy variables, $\Omega^0$, equal to an initial guess.
+	\item Given $\Omega^0$, find the households' decision rules that solve their optimization problem (see section \ref{HHsolve}).
+	\item Using the decision rules obtained in step 2, compute the steady-state population distribution $x(s)$.
+	\item Using the decision rules obtained in step 2 and the population distribution obtained in step 3, compute the aggregate variables $\{K,N,W_P,W_G,W_F,Q\}$. Compute the new factor prices and government policy schedule, $\Omega^1$, that satisfies equilibrium conditions (firm optimization and a stable level of debt-to-GDP).
+	\item If the difference between $\Omega^0$ and $\Omega^1$ is small, stop.\footnote{The gap between $\Omega^0$ and $\Omega^1$ is computed as the supremum norm $||\frac{\Omega^1 - \Omega^0}{(1+\Omega^0)}||<\epsilon$, where $\epsilon=10^{-3}$ for example.} Otherwise, update $\Omega^0 = (1-\vartheta)\Omega^0 + \vartheta \Omega^1$, where $\vartheta$ is a dampening parameter that aids convergence. Return to step 2.
+\end{enumerate}
+
+
+\subsection{Solving for the Transition Path}
+
+Assume the economy is in its initial steady-state equilibrium with government policy schedule $\Psi_0$ in period $t=0$ and that the government announces a new policy schedule, $\Psi_1$, at the beginning of period $t=1$. The equilibrium transition path is computed as follows:
+\begin{enumerate}
+	\item Choose a large number of period $T$ so that the economy will reasonably reach the new steady-state equilibrium within $T$ periods.
+	\item Set $\Omega_T^0$ to an initial guess and solve for the economy's terminal steady-state equilibrium. This includes finding households' decision rules and the stationary population distribution.
+	\item Using the initial and terminal steady-state values, construct a guess on the path of factor prices and government policy variables, $\Omega^0 = \{r_t^0,w_t^0,...\}_{t=1}^T$, that is consistent with the announced policy $\Psi_1$.
+	\item Given $\Omega^0$, find the households' decision rules that solve their optimization problem via backward induction (from age $j=J$ to age 1) from period $t=T-1$ to period $t=1$ recursively.
+	\item Using the initial steady-state decision rule and population distribution, compute the progression of the population distribution ($\{x_t(s)\}_{t=1}^T$ and aggregate variables ($\{K,N,W_P,W_G,W_F,Q\}_{t=1}^T$) for all periods $t\in\{1,...,T-1\}$. Compute the new sequence of factor prices and government policy schedule, $\Omega^1 = \{\Omega_t^1\}_{t=1}^T$, that satisfies equilibrium conditions (firm optimization).
+	\item If the difference between $\{\Omega_t^0\}_{t=1}^T$ and $\{\Omega_t^1\}_{t=1}^T$ is small, stop.\footnote{The gap between $\{\Omega_t^0\}_{t=1}^T$ and $\{\Omega_t^1\}_{t=1}^T$ is computed as the supremum norm $||\frac{\Omega^1 - \Omega^0}{(1+\Omega^0)}||<\epsilon$, where $\epsilon=10^{-3}$ for example.} Otherwise, update $\Omega_t^0 = (1-\vartheta)\Omega_t^0 + \vartheta \Omega_t^1 \quad \forall t$, where $\vartheta$ is a dampening parameter that aids convergence.\footnote{Additionally, we check to ensure that $T$ is large enough by computing the gap between $\Omega_T^1$ and $\Omega_{T-1}^1$.} Return to step 4.
+\end{enumerate}
+
+\subsubsection{Closure Rules}
+
+In order to solve the model, government policy ($\Psi$) must ensure that the debt-to-GDP ratio is stable in the long-run. While the government is free to run budget deficits and surpluses over the near and medium terms, at some point policy must change to stabilize the debt-to-GDP ratio. This policy change is known as the ``closure rule".
+
+There are several policy tools that can be used, on their own or together, to stabilize the debt-to-GDP ratio. These closure rules can be structured to happen fully in a specified period or be phased in over a window of time (often 10 years). In this model the level at which the debt-to-GDP ratio is stabilized is the endogenously determined level at the year closure \textit{ends}.
+
+\begin{flushleft}
+\textbf{\textit{Non-Productive Government Spending}} ($c_{G,t}$)
+\end{flushleft}
+To close the stationarized government budget constraint with non-productive government spending, set the aggregate level, $C_{G,t}$ equal to the deficit value.
+\begin{align*}
+C_{G,t}^{close} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} - \\
+&TR_{OASI,t} - TR_{DI,t} - TR_{HI,t} - TR_{LS,t} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the per-capita value, divide $C_{G,t}^{close}$ by the stationarized population in period $t$.
+\be c_{G,t}^{close} = \frac{C_{G,t}^{close}}{\sum_{i=21}^I p_i} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+
+\begin{flushleft}
+\textbf{\textit{Lump-Sum Transfers}} ($\{tr_{LS,t},\psi_{D,t},\psi_{H,t}\}$)
+\end{flushleft}
+To close the stationarized government budget constraint with the general lump-sum transfer payments, set the aggregate transfer level, $TR_{LS,t}$ equal to the deficit value.
+\begin{align*}
+TR_{LS,t}^{close} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} - \\
+&TR_{OASI,t} - TR_{DI,t} - TR_{HI,t} - C_{G,t} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the per-capita value, divide $TR_{LS,t}^{close}$ by the stationarized population in period $t$.
+\be tr_{LS,t}^{close} = \frac{TR_{LS,t}^{close}}{\sum_{i=21}^I p_i} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+To close the stationarized government budget constraint with the disability insurance (DI) lump-sum transfer payments, set the aggregate transfer level, $TR_{DI,t}$ equal to the deficit value.
+\begin{align*}
+TR_{DI,t}^{close} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} - \\
+&TR_{OASI,t} - TR_{LS,t} - TR_{HI,t} - C_{G,t} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the per-capita value, divide $TR_{DI,t}^{close}$ by the stationarized population in period $t$ of households aged $i\in\{21,64\}$.
+\be \psi_{D,t}^{close} = \frac{TR_{DI,t}^{close}}{\sum_{i=21}^{I_C-1} p_i} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+To close the stationarized government budget constraint with the Medicare (HI) lump-sum transfer payments, set the aggregate transfer level, $TR_{HI,t}$ equal to the deficit value.
+\begin{align*}
+TR_{HI,t}^{close} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} - \\
+&TR_{OASI,t} - TR_{LS,t} - TR_{DI,t} - C_{G,t} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the per-capita value, divide $TR_{HI,t}^{close}$ by the stationarized population in period $t$ of households aged $i\in\{65,100\}$.
+\be \psi_{H,t}^{close} = \frac{TR_{HI,t}^{close}}{\sum_{i=I_c}^{I} p_i} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+\begin{flushleft}
+\textbf{\textit{OASI Benefits}} ($\psi_{O,t}$)
+\end{flushleft}
+To close the stationarized government budget constraint with OASI benefits, set the aggregate OASI transfer level, $TR_{OASI,t}$ equal to the deficit value.
+\begin{align*}
+TR_{OASI,t}^{close} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} -\\ 
+&TR_{HI,t} - TR_{LS,t} - TR_{DI,t} - C_{G,t} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the OASI adjustment factor ($\psi_{O,t}$), compute the ratio between the required outlays that would close the budget ($TR_{OASI,t}^{close}$) and the actual OASI outlays ($TR_{OASI,t}$) and multiply that ratio by the current OASI adjustment factor.
+\be \psi_{O,t}^{close} = \frac{TR_{OASI,t}^{close}}{TR_{OASI,t}}\psi_{O,t} \notag \ee
+
+
+\begin{flushleft}
+\textbf{\textit{Lump-Sum Tax}} ($\tau_{LS,t}$)
+\end{flushleft}
+To close the stationarized government budget constraint with lump-sum taxes, set the aggregate lump-sum tax revenues, $T_{LS,t}$ equal to the surplus value.
+\begin{align*}
+T_{LS,t}^{close} = &TR_{OASI,t} + TR_{DI,t} + TR_{HI,t} + C_{G,t} + TR_{LS,t} - \\
+&[(1+r_g)]*W_{G,t} - T_{Ninc,t} - T_{Kinc,t} - T_{P,t} - T_{C,t} + Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the per-capita lump-sum tax rate ($\tau_{LS,t}$), divide $T_{LS,t}^{close}$ by the stationarized population in period $t$.
+\be \tau_{LS,t}^{close} = \frac{T_{LS,t}^{close}}{\sum_{i=21}^I p_i} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+
+\begin{flushleft}
+\textbf{\textit{Income Tax Rates}} ($\varphi_t$)
+\end{flushleft}
+To close the stationarized government budget constraint with the adjustment to income taxes ($\varphi_{t}$), set aggregate income tax revenues, $T_{Ninc,t} + T_{Kinc,t}$ equal to the surplus value.
+\begin{align*}
+T_{inc,t}^{close} = T_{Ninc,t}^{close} + T_{Kinc,t}^{close} = &TR_{OASI,t} + TR_{DI,t} + TR_{HI,t} + C_{G,t} + TR_{LS,t} -\\ 
+&[(1+r_g)]*W_{G,t} - T_{C,t} - T_{P,t} - T_{LS,t}  + Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the adjustment to the income tax rates ($\varphi_{t}^{close}$), divide $T_{inc,t}^{close}$ by the aggregate income taxes received in period $t$ and multiply that ratio by the existing adjustment factor $\varphi_t$. 
+\be \varphi_{t}^{close} = \frac{T_{inc,t}^{close}}{T_{inc,t}}*\varphi_t \notag \ee
+
+
+\begin{flushleft}
+\textbf{\textit{Capital Income Tax Rates}} ($\tau_{K,t}$)
+\end{flushleft}
+To close the stationarized government budget constraint with the flat capital income tax rate ($\tau_{K,t}$), set the aggregate capital income tax revenues, $T_{Kinc,t}$ equal to the surplus value.
+\begin{align*}
+T_{Kinc,t}^{close} = &TR_{OASI,t} + TR_{DI,t} + TR_{HI,t} + C_{G,t} + TR_{LS,t} - \\
+&[(1+r_g)]*W_{G,t} - T_{Ninc,t} - T_{C,t} - T_{P,t} - T_{LS,t} + Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}
+\end{align*}
+to back out the capital income tax rate ($\tau_{K,t}^{close}$), divide $T_{Kinc,t}^{close}$ by the aggregate return on private wealth in period $t$, after adjusting for $\varphi_t$.
+\be \tau_{K,t}^{close} = \frac{1}{\varphi_t}\frac{T_{Kinc,t}^{close}}{(\tilde{r}_t+\pi_e)*\sum_{i=21}^{I}\int_{A\times B\times Z}a dX_{t}(\mathbf{s})} \notag \ee
+
+
+\begin{flushleft}
+\textbf{\textit{Consumption Tax Rates}} ($\tau_{C,t}$)
+\end{flushleft}
+To close the stationarized government budget constraint with the flat consumption tax rate ($\tau_{C,t}$), set the aggregate consumption tax revenues, $T_{C,t}$ equal to the surplus value.
+\begin{align*}
+T_{C,t}^{close} = &TR_{OASI,t} + TR_{DI,t} + TR_{HI,t} + C_{G,t} + TR_{LS,t} - \\
+&[(1+r_g)]*W_{G,t} - T_{Ninc,t} - T_{Kinc,t} - T_{P,t} - T_{LS,t} + Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}} 
+\end{align*}
+to back out the consumption tax rate ($\tau_{C,t}^{close}$), divide $T_{C,t}^{close}$ by the stationarized aggregate consumption level in period $t$.
+\be \tau_{C,t}^{close} = \frac{T_{C,t}^{close}}{\sum_{i=21}^{I}\int_{A\times B\times Z}c dX_{t}(\mathbf{s})} \notag \ee
+where $p_i$ is the measure of households age $i$ in the stationarized population.
+
+\begin{flushleft}
+\textbf{\textit{Payroll Tax Rates}} ($\{\tau_{O,t},\tau_{D,t},\tau_{H,t},\tau_{H2,t}\}$)
+\end{flushleft}
+To close the stationarized government budget constraint with a flat payroll tax rate ($\{\tau_{O,t},\tau_{D,t},\tau_{H,t},\tau_{H2,t}\}$), set the aggregate payroll tax revenues, $T_{P,t}$ equal to the surplus value.
+\begin{align*}
+T_{P,t}^{close} = &TR_{OASI,t} + TR_{DI,t} + TR_{HI,t} + C_{G,t} + TR_{LS,t} - \\
+&[(1+r_g)]*W_{G,t} - T_{Ninc,t} - T_{Kinc,t} - T_{C,t} - T_{LS,t} + Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}} 
+\end{align*}
+to back out the payroll tax rates ($\{\tau_{O,t}^{close},\tau_{D,t}^{close},\tau_{H,t}^{close},\tau_{H2,t}^{close}\}$), divide $T_{P,t}^{close}$ by the actual level of payroll tax revenues received in period $t$ ($T_{P,t}$) and multiply that ratio by the existing payroll tax rates.\footnote{If we wanted to close the budget with only one of the tax rates, the rule would look similar but only affect the policy instruments being used.}
+\be \tau_{p,t}^{close} = \frac{T_{P,t}^{close}}{T_{P,t}}\tau_{p,t} \quad \forall p\in\{O,D,H,H2\} \notag \ee
+
+\begin{flushleft}
+	\textbf{Phasing Closure In Over Time} 
+\end{flushleft}
+Another option is to close the government's budget slowly over time (often 10 years, but any window will work). The way this is constructed is that the aggregate policy variables (aggregate revenues and outlays) needed to close the gap within the period are computed. Next the difference between the closure value and the value, absent closure, is computed. The difference is scaled linearly across the window of time and added to the value absent closure. For example, consider a closure using non-productive government spending that is phased in over ten years. The level of government spending in the first period of closure is the value absent closure plus one-tenth the difference between that value and the amount necessary to close the budget. In year five, the value is what it would have been absent closure plus half the difference, and from year ten on the value is the total amount necessary to close the  budget.
+\begin{align*}
+\Delta C_{G,t} = &[(1+r_g)]*W_{G,t} + T_{Ninc,t} + T_{Kinc,t} + T_{LS,t} + T_{P,t} + T_{C,t} - \\
+&TR_{OASI,t} - TR_{DI,t} - TR_{HI,t} - TR_{LS,t}  - C_{G,t}^{non-close} - Y_{t+1}*(1+\mu)*(1+\nu)*\frac{W_{G,t_{close}}}{Y_{t_{close}}}\\
+C_{G,t}^{close} = &\min\Big(\frac{t-T_{close}+1}{\text{\# Closure Periods}},1\Big)*\Delta C_{G,t} + C_{G,t} \quad \forall t\ge T_{close}
+\end{align*}
+
+Structuring the phase in linearly means the closure is front-weighted in that the first year's adjustment is the largest.
+
+\section{Extensions: \textit{Theory, Calibration, and Computation}}
+
+\subsection{Code Development}
+
+\textbf{Speed}:
+\begin{itemize}
+	\item Parallelization. Right now NUMBA's is working well but it's speed-ups stop at 4-cores. 
+	\begin{itemize}
+		\item Status. Now it takes about 4.2 seconds to solve the households problem with a 4.0Ghz processor. Depending on the guess, and the speed at which prices and aggregates are updated, it takes between 30-60 seconds to solve for the steady state. The transition will take roughly 8-9 minutes to solve. Depending on how many iterations it takes to converge a full model run is expected to take between 60-180 minutes.
+	\end{itemize}
+\end{itemize}
+
+
+\subsection{Low Fruit}
+This section outlines a few things that would, in my view, improve the model that should not cost too much in terms of coding time and computational power.
+
+\begin{itemize}
+	\item Demographics, primarily age.
+	\begin{itemize}
+		\item The challenge here is that we calibrate to an initial steady state, typically people that put realistic demographics in an OLG model calibrate a steady state to something like 1985 before introducing differential population  growth rates to hit the demographic  distribution in say 2019. I'm not sure we want our calibration strategy to be matching moments in 1985.
+	\end{itemize}
+	\item DI benefits: keep lump sum transfers but make them proportional to their average life-time incomes. Aggregate should track actual average life-time earnings using DI benefit rules.
+	\item Add a measure of liquidity constrained households. These households only face labor supply decisions during their career and are therefore fast to solve. We can allow the measure of liquidity constrained households to vary by age, assets, and ability types if we want.
+	\item I think we can do better than the \citet{Gouveia.Strauss:1994} functional form of income taxation. This need not be a smooth function as we are no longer solving the model analytically.
+	\item How do we want to model the openness assumption? Mainly and issue of calibration.
+\end{itemize}
+
+\subsection{Medium Fruit}
+This section contains a list of extensions that are doable but would require some significant work, but we know how to do them.
+
+\begin{itemize}
+	\item Endogenize the claiming age for OASI benefits.
+	\item Policy uncertainty and heterogeneous beliefs.
+	\begin{itemize}
+		\item Allow households to have different, and not necessarily rational, expectations about future prices and policy.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Top Fruit}
+This section contains a list of extensions that would require significant programming, calibration, and development time. Alongside soaking up computational resources.
+
+\begin{itemize}
+	\item Health.
+	\begin{itemize}
+		\item Add health as a state variable, follow a discrete Markov process similar to labor productivity.
+		\item Health state maps to medical expenses.
+		\item Medical expenses are paid: (1) Medicaid, (2) Medicare, (3) Out-of-pocket, (4) private insurance, (5) employer sponsored insurance. (this also constitutes a new state variable)
+		\item Modeling public and private insurance plans is non-trivial, but there is literature to lean on.
+		\item Medical expenses will allow the household to better match the wealth distribution (an area where the model fits poorly right now). This becomes important for means tested public programs.
+		\item Health correlates with age, assets, and average lifetime earnings. This is something we can probably calibrate. Medical expenses come from health and should vary at least by age, and perhaps by average lifetime earnings to capture some notion of endogenous healthcare take-up that is not present in the model (higher earners spend more on health).
+	\end{itemize}
+\end{itemize}
+
+
+\subsubsection{Adding Health}
+
+\begin{center}
+\Large This section is VERY  preliminary and incomplete.
+\end{center}
+\normalsize
+
+Following much of the structure in \citet{Jung:2017}.
+
+\begin{flushleft}
+\textbf{Technology}
+\end{flushleft}
+Adding health requires the addition of a second `medical goods and services' sector structured as follows:
+\be \max_{\tilde{K}_{t},\tilde{N}_{t}}p_mF^m(\tilde{K}_{m,t},\tilde{N}_{m,t})-(r_{t}+\delta)\tilde{K}_{m,t}-w_{t}\tilde{N}_{m,t} \ee
+where $p_m$ is the base price for medical services. Households pay a markup over the base price $p_j^{in_j}=(1+\nu^{in})p_m$ that depends on the household's age ($j$) and insurance status ($in$). Profits collected by the medical services firm are redistributed to surviving households via a lump-sum transfer. Note that the production function differs from the general consumption good sector.
+
+Household's labor productivity will depend on their age, idiosyncratic labor productivity state, and health status ($e(j,z,h)$). 
+
+\begin{flushleft}
+\textbf{Health Status and Medical Expenditures}
+\end{flushleft}
+Households health status follows a Markov process that depends on their age ($j$).\footnote{This is in contrast to the endogenous health capital literature that \citet{Jung:2017} follows.}
+
+Gross medical expenditures ($m_j(h)$) follow an exogenous process that depends on households age ($j$) and health status ($h$). The share of gross medical expenditures that households pay out of pocket depends on their age ($j$) and insurance status ($in$). Out-of-pocket expenditures depends on the level of gross medical expenditures, insurance-specific price ($p_m^{in}$), and insurance-type specific co-insurance rate ($\gamma^{in}$) that also depends on age.
+
+\be o(m_j(h),in)=\gamma^{in}\big[p_m^{in}\times m_j(h)\big] \notag \ee
+
+A challenge will be getting the out-of-pocket medical expenditures to fit the data in the cross-section (across the income/wealth distribution). We want the model to fit medical outlays well across the age-income distribution but also in aggregates by insurance type. Most of this is exogenously imposed so it should be feasible.
+
+\begin{flushleft}
+\textbf{Insurance Sector}
+\end{flushleft}
+Households can have one of the following health insurance states:
+\begin{enumerate}
+	\item Uninsured, $in=1$
+	\item Group Health Insurance Plan (GHI), $in=2$
+	\begin{itemize}
+		\item Those working full-time receive GHI benefits from their employer.
+	\end{itemize}
+	\item Individual Health Insurance Plan (IHI), $in=3$
+	\begin{itemize}
+		\item Households not receiving GHI or public insurance can purchase private insurance.
+	\end{itemize}
+	\item Medicare, $in=4$
+	\begin{itemize}
+		\item All households over the age of $I_C$ receive Medicare benefits.
+	\end{itemize}
+	\item Medicaid, $in=5$
+	\begin{itemize}
+		\item Households meeting an income and asset test automatically receive Medicaid benefits
+	\end{itemize}
+	\item Dual-Eligible (Medicare and Medicaid), $in=6$
+	\begin{itemize}
+		\item Households over the age $I_C$ who also meet Medicaid's income and asset tests are dual-eligible.
+	\end{itemize}
+\end{enumerate}
+
+Households with group, individual, or Medicare health insurance also pay an insurance premium ($Pr_j^{in}$) in addition to their plan specific co-insurance ($\gamma^{in}$). Public insurance plans are funded by tax revenue, co-payments, and premiums (in the case of Medicare). Private individual insurance plans are segmented by age while group insurance plans are not. Private insurance firms are competative and set premiums according to their expected outlays, after adjusting for their insurance load ($\omega_j^{in}$), and receipts via premiums.
+
+\be Pr_j^{IHI} = \frac{1+\omega_j^{IHI}}{1+r}\frac{(1-\gamma^{IHI})p_m^{IHI}\sum_h \Big[ m_j(h)\hat{\mu}(j,h) \Big]}{\sum_h\Big[ \ind_{\{in=IHI\}}\hat{\mu}(j,h)\Big]} \notag \ee
+
+\be Pr^{GHI} = \frac{1+\omega_j^{GHI}}{1+r}\frac{(1-\gamma^{GHI})p_m^{GHI}\sum_j \sum_h \Big[ m_j(h)\hat{\mu}(j,h) \Big]}{\sum_j \sum_h\Big[ \ind_{\{in=GHI\}}\hat{\mu}(j,h)\Big]} \notag \ee
+
+where $\hat{\mu}(j,h)$ is the measure of households age $j$ with health status $h$. Medicare premiums, $Pr^{care}$ are calibrated to match Medicare premiums as a share of GDP.
+
+Medicaid is a payer of last resort. Households
+
+\clearpage
+
+\bibliographystyle{aeanobold}
+\bibliography{OLG_model_bib}
+
+\end{document}
