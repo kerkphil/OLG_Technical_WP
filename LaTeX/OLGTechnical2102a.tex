@@ -1,0 +1,192 @@
+\documentclass[letterpaper,12pt]{article}
+% packages used
+    \usepackage{natbib}
+	\usepackage{threeparttable}
+	\usepackage[format=hang,font=normalsize,labelfont=bf]{caption}
+	\usepackage{amsmath}
+	\usepackage{amssymb}
+	\usepackage{amsthm}
+	\usepackage{caption}
+	\usepackage{subcaption}
+	\usepackage{setspace}
+	\usepackage{float,color}
+	\usepackage[pdftex]{graphicx}
+	\usepackage{hyperref}
+	\usepackage{multirow}
+	\usepackage{float,graphicx,color}
+	\usepackage{graphics}
+    \usepackage{placeins}
+    \usepackage{authblk}
+    \usepackage{tikz}
+
+% other setup
+	\hypersetup{colorlinks, linkcolor=red, urlcolor=blue, citecolor=red, hypertexnames=false}
+	\graphicspath{{./figures/}}
+	\DeclareMathOperator*{\Max}{Max}
+	\bibliographystyle{aer}
+	\numberwithin{equation}{section}
+	\numberwithin{figure}{section}
+	\numberwithin{table}{section}
+	\newcommand\ve{\varepsilon}
+	\def\chk{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+	\newcommand*{\addheight}[2][.5ex]{%
+        \raisebox{0pt}[\dimexpr\height+(#1)\relax]{#2}%
+        }
+
+
+\begin{document}
+
+
+\begin{titlepage}
+	\title{Using CBO's Overlapping Generations Model to Assess the Effects of XXX
+	\thanks{The views expressed in this paper are the authors' and should not be interpreted as those of the Congressional Budget Office.}}
+
+    \author[1]{Jaeger Nelson}
+	\author[1]{Kerk L. Phillips}
+
+	\affil[1]{\footnotesize US Congressional Budget Office, Washington, DC, USA}
+
+	\date{February, 2021\\
+	\small{version 2021.02.a}}
+	
+	\maketitle
+
+	\vspace{-0.3 in}
+	\begin{abstract}
+	\small{
+	This paper ... 
+
+	\vspace{0.1 in}
+
+	\textit{keywords:} economic policy, taxes, overlapping generations, computational economics
+
+	\vspace{0.1 in}
+
+	\textit{JEL classifications: ??} }
+	\end{abstract}
+
+	\centering
+	IN PROGRESS
+	\thispagestyle{empty}
+\end{titlepage}
+
+
+\pagestyle{empty}
+
+\begin{center}
+Working Paper Series\\
+Congressional Budget Office\\
+Washington, DC\vspace{0.75in}
+
+\textbf{\Large Using an Overlapping Generations Model to Assess the Effects of Financing a Large Government Expenditure}
+
+\vspace{5em}
+
+Jaeger Nelson and Kerk Phillips\\
+Macroeconomic Analysis Division\\
+Congressional Budget Office\\
+jaeger.nelson@cbo.gov
+
+\vspace{5em}
+
+Working Paper 2020-XX\\
+
+\vspace{2em}
+\Large [VERY PRELIMINARY DO NOT CITE]\\
+\vspace{2em}
+\normalsize
+
+October 2020\\
+
+\end{center}
+
+\vspace*{\fill}
+
+\begin{flushleft}
+	\small To enhance the transparency of the work of the Congressional Budget Office and to encourage external review of that work, CBO's working paper series includes papers that provide technical descriptions of official CBO analyses as well as papers that represent independent research by CBO analysts. Papers in this series are available at \url{http://go.usa.gov/ULE}.
+\end{flushleft}
+
+\vspace{1em}
+
+\begin{center}
+	\url{www.cbo.gov/publication/XXXXX}
+\end{center}
+
+
+
+
+\newpage
+%\doublespacing
+%\thispagestyle{empty}
+
+\begin{center}
+\textbf{Abstract}\\
+\end{center}
+
+\noindent This paper ...
+\\
+
+
+\newpage
+%\doublespacing
+
+\pagestyle{plain}
+\setcounter{page}{1}
+
+
+
+
+
+\begin{spacing}{1.5}
+
+\section{Introduction} \label{sec_intro}
+
+	This paper serves two major purposes.  First, it documents the effects of XXX.  Second, it details and documents a substantive revision to CBO's overlapping generations model.
+
+	\subsection{Literature Review} \label{sec_intro_lit}
+
+		Cite the following: \citet{Auerbach.Kotlikoff:1987}, \citet{NishiyamaSmetters:2007}, \citet{Nishiyama.Smetters:2014}, \citet{NishiyamaReichling:2015}, \citet{NelsonEtal:2019}.
+
+
+\section{The Overlapping Generations Model} \label{sec_OLGModel}
+
+	This section details CBO's revised overlapping generations model.
+
+	\subsection{Firms' Problem} \label{sec_OLGModel_firms}
+
+	\subsection{Households' Problem} \label{sec_OLGModel_HH}
+
+	\subsection{Government} \label{sec_OLGModel_govt}
+
+	\subsection{Calibration} \label{sec_OLGModel_calib}
+
+	\subsection{Solution Method} \label{sec_OLGModel_soln}
+
+
+\section{Simulation Results} \label{sec_results}
+
+
+
+\section{Conclusion} \label{sec_concl}
+
+	
+
+\clearpage
+
+% \newpage
+% \renewcommand{\theequation}{A.\arabic{equation}}
+%                                                  % redefine the command that creates the section number
+% \renewcommand{\thesection}{A\arabic{section}}   % redefine the command that creates the equation number
+% \setcounter{equation}{0}                         % reset counter
+% \setcounter{section}{0}                          % reset section number
+% \section*{APPENDICES}                              % use *-form to suppress numbering
+% \numberwithin{figure}{section}
+% \numberwithin{equation}{section}
+
+
+\end{spacing}
+\newpage
+\nocite{*}
+\bibliography{OLGTechnical}
+
+\end{document}
